@@ -33,7 +33,7 @@ class Field {
         this.type = type
 
         isArray = false;
-        scale = 1
+        scale = [1]
         offset = 0
     }
 
