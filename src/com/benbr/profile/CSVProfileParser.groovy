@@ -11,15 +11,16 @@ class CSVProfileParser{
         this.file = file;
     }
 
-    List<Field> getFields() {
+    HashMap<String, List<Field>> getFields() {
         List<CSVRecord> records = CSVFormat.EXCEL.parse(new FileReader(file)).getRecords()
+
+        HashMap<String, List<Field>> fields = []
+
         List<List<Field>> fieldsList = [];
         List<Field> currentFieldList = [];
         List<String> fieldNames = []
-        String currentMessageName;
+        String currentMessageName = null;
         Boolean titleReached = false;
-
-        // TODO goovy each method doesn't work due to cast to List<Field> being required. Why?
 
         for (def record: records) {
             if (!titleReached) {
@@ -29,11 +30,11 @@ class CSVProfileParser{
 
             def msgType =  record.get(0)
             if (msgType.size() != 0) {
-                fieldNames << currentMessageName
-                currentMessageName = msgType;
-                if (currentFieldList.size() != 0) {
-                    fieldsList << currentFieldList;
+                if (currentFieldList.size() != 0 && currentMessageName != null) {
+                    fields[currentMessageName] = currentFieldList
                 }
+
+                currentMessageName = msgType;
                 currentFieldList = []
                 continue;
             }
@@ -46,6 +47,7 @@ class CSVProfileParser{
             currentFieldList <<  parseField(record)
         }
 
+        return fields;
     }
 
     static Field parseField(CSVRecord record) {

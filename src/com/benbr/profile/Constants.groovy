@@ -94,7 +94,7 @@ class Constants {
             131 : "sint16",
             132 : "uint16",
             133 : "sint32",
-            134 : "sint32",
+            134 : "uint32",
             7   : "string",
             136 : "float32",
             137 : "float64",

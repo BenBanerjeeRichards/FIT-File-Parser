@@ -15,4 +15,13 @@ class Util {
         return unsignedValues
     }
 
+    static int[] littleToBigEndian(List<Integer> input) {
+        int[] out = new int[input.size()]
+        input.eachWithIndex{ int it, int idx ->
+            out[input.size() - idx - 1] = it
+        }
+
+        return out
+    }
+
 }

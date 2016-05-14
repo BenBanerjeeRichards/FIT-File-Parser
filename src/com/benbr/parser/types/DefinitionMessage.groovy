@@ -2,13 +2,38 @@ package com.benbr.parser.types
 
 class DefinitionMessage {
 
-    DefinitionMessage(ArchitectureType architectureType, int globalMessageNumber, int fieldCount, List<FieldDefinition> fieldDefinitions) {
+    boolean equals(o) {
+        if (this.is(o)) return true
+        if (getClass() != o.class) return false
+
+        DefinitionMessage that = (DefinitionMessage) o
+
+        if (globalMessageNumber != that.globalMessageNumber) return false
+        if (reserved != that.reserved) return false
+        if (architectureType != that.architectureType) return false
+        if (developerFieldDefinitions != that.developerFieldDefinitions) return false
+        if (fieldDefinitions != that.fieldDefinitions) return false
+
+        return true
+    }
+
+    int hashCode() {
+        int result
+        result = reserved
+        result = 31 * result + architectureType.hashCode()
+        result = 31 * result + globalMessageNumber
+        result = 31 * result + (fieldDefinitions != null ? fieldDefinitions.hashCode() : 0)
+        result = 31 * result + (developerFieldDefinitions != null ? developerFieldDefinitions.hashCode() : 0)
+        return result
+    }
+
+    DefinitionMessage(ArchitectureType architectureType, int globalMessageNumber, List<FieldDefinition> fieldDefinitions) {
         this.architectureType = architectureType
         this.globalMessageNumber = globalMessageNumber
         this.fieldDefinitions = fieldDefinitions
     }
 
-    DefinitionMessage(int reserverd, ArchitectureType architectureType, int globalMessageNumber, int fieldCount, List<FieldDefinition> fieldDefinitions, List<FieldDefinition> developerFieldDefinitions) {
+    DefinitionMessage(int reserverd, ArchitectureType architectureType, int globalMessageNumber, List<FieldDefinition> fieldDefinitions, List<FieldDefinition> developerFieldDefinitions) {
         this.reserved = reserverd
         this.architectureType = architectureType
         this.globalMessageNumber = globalMessageNumber
