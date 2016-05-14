@@ -5,23 +5,24 @@ class DefinitionMessage {
     DefinitionMessage(ArchitectureType architectureType, int globalMessageNumber, int fieldCount, List<FieldDefinition> fieldDefinitions) {
         this.architectureType = architectureType
         this.globalMessageNumber = globalMessageNumber
-        this.fieldCount = fieldCount
         this.fieldDefinitions = fieldDefinitions
     }
 
-    DefinitionMessage(int reserverd, ArchitectureType architectureType, int globalMessageNumber, int fieldCount, List<FieldDefinition> fieldDefinitions) {
+    DefinitionMessage(int reserverd, ArchitectureType architectureType, int globalMessageNumber, int fieldCount, List<FieldDefinition> fieldDefinitions, List<FieldDefinition> developerFieldDefinitions) {
         this.reserverd = reserverd
         this.architectureType = architectureType
         this.globalMessageNumber = globalMessageNumber
-        this.fieldCount = fieldCount
         this.fieldDefinitions = fieldDefinitions
+        this.developerFieldDefinitions = developerFieldDefinitions
     }
 
     private int reserverd
     private ArchitectureType architectureType
     private int globalMessageNumber
-    private int fieldCount
     private List<FieldDefinition> fieldDefinitions
+    
+    // Usually not set (depends of reserved bit in header)
+    private List<FieldDefinition> developerFieldDefinitions;
 
     int getReserverd() {
         return reserverd
@@ -33,10 +34,6 @@ class DefinitionMessage {
 
     int getGlobalMessageNumber() {
         return globalMessageNumber
-    }
-
-    int getFieldCount() {
-        return fieldCount
     }
 
     List<FieldDefinition> getFieldDefinitions() {
