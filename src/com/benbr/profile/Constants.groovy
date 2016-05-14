@@ -1,6 +1,8 @@
 package com.benbr.profile
 
-class MessageNumber {
+import java.lang.reflect.Type
+
+class Constants {
 
 
     // Hash map uused instad of an array as it provides more flexibility when assigning
@@ -8,7 +10,7 @@ class MessageNumber {
     // using a map is more clear
 
     // Generated from fit_example.h in the C FIT SDK
-    public final HashMap messageIdToName= [
+    public static final HashMap messageIdToName= [
             0 : "file_id",
             1 : "capabilities",
             2 : "device_settings",
@@ -82,6 +84,24 @@ class MessageNumber {
             202 : "exd_data_concept_configuration",
             206 : "field_description",
             207 : "developer_data_id"
+    ]
+
+    // s => signed, u => unsigned, z => ?
+    public static final units = [
+            0   : "enum",
+            1   : "sint8",
+            2   : "uint8",
+            131 : "sint16",
+            132 : "uint16",
+            133 : "sint32",
+            134 : "sint32",
+            7   : "string",
+            136 : "float32",
+            137 : "float64",
+            10  : "uint8z",
+            139 : "uint16z",
+            140 : "uint32z",
+            13  : "byte",
     ]
 
 
