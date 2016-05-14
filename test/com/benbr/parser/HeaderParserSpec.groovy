@@ -8,7 +8,7 @@ class HeaderParserSpec extends Specification {
         given:
         def bytes = [0x0E, 0x10, 0x7D, 0x06, 0x0B, 0x98, 0x00, 0x00, 0x2E, 0x46, 0x49, 0x54, 0x00, 0x00] as byte[]
         def headerByteStream = new DataInputStream(new ByteArrayInputStream(bytes))
-        def header = new HeaderParser().parseHeader(headerByteStream)
+        def header = new FileHeaderParser().parseHeader(headerByteStream)
 
         expect:
         header.size == 14
@@ -25,7 +25,7 @@ class HeaderParserSpec extends Specification {
 
     def "Given an invalid header, is it marked as invalid"() {
         expect:
-        new HeaderParser().parseHeader(new DataInputStream(new ByteArrayInputStream(headerBytes))).isValid() == res
+        new FileHeaderParser().parseHeader(new DataInputStream(new ByteArrayInputStream(headerBytes))).isValid() == res
 
         where:
         headerBytes                                                                                               | res
