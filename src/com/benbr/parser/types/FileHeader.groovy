@@ -1,7 +1,7 @@
-package com.benbr.parser
+package com.benbr.parser.types
 
-class Header {
-    Header(int size, int protocolVersion, int profileVersion, int dataSize, char[] dataType, int crc) {
+class FileHeader {
+    FileHeader(int size, int protocolVersion, int profileVersion, int dataSize, char[] dataType, int crc) {
         this.size = size
         this.protocolVersion = protocolVersion
         this.profileVersion = profileVersion

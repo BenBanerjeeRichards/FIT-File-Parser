@@ -1,10 +1,11 @@
 package com.benbr.parser
 
 import com.benbr.Util
+import com.benbr.parser.types.FileHeader
 
-class HeaderParser {
+class FileHeaderParser {
 
-    public Header parseHeader(DataInputStream byteStream) {
+    public FileHeader parseHeader(DataInputStream byteStream) {
         int headerSize = byteStream.read()
         int[] bytes = Util.readUnsignedValues(byteStream, headerSize - 1)
 
@@ -18,7 +19,7 @@ class HeaderParser {
         dataType[3] = bytes[10]
         int crc = bytes[12] << 8 | bytes[11]
 
-        return new Header(headerSize, protocolVersion, profileVersion, dataSize, dataType, crc)
+        return new FileHeader(headerSize, protocolVersion, profileVersion, dataSize, dataType, crc)
     }
 
 }
