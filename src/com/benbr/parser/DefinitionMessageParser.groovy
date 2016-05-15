@@ -7,10 +7,7 @@ import com.benbr.parser.types.DefinitionMessage
 import com.benbr.parser.types.FieldDefinition
 import com.benbr.parser.types.MessageHeader
 import com.benbr.profile.Constants
-import com.benbr.profile.Field
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const
-import com.thoughtworks.qdox.parser.structs.FieldDef
-import org.apache.xmlbeans.impl.xb.xsdschema.FieldDocument
+import com.benbr.profile.types.Field
 
 class DefinitionMessageParser {
 
