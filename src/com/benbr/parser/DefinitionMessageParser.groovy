@@ -8,7 +8,9 @@ import com.benbr.parser.types.FieldDefinition
 import com.benbr.parser.types.MessageHeader
 import com.benbr.profile.Constants
 import com.benbr.profile.Field
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const
 import com.thoughtworks.qdox.parser.structs.FieldDef
+import org.apache.xmlbeans.impl.xb.xsdschema.FieldDocument
 
 class DefinitionMessageParser {
 
@@ -42,10 +44,10 @@ class DefinitionMessageParser {
                 devFields << parseField(inputStream)
             }
         } else {
-            devFields = null;
+            devFields = null
         }
 
-        return new DefinitionMessage(reserved, architecture, globalMessageNum, fields, devFields)
+        return new DefinitionMessage(globalMessageNum, architecture, reserved, fields, devFields);
     }
 
     private static FieldDefinition parseField(DataInputStream inputStream) {
@@ -56,32 +58,19 @@ class DefinitionMessageParser {
         return new FieldDefinition(bytes[0], bytes[1], bytes[2])
     }
 
-    // Note that this mutates the fields
-    public List<FieldDefinition> associateFieldWithName(HashMap<String, List<Field>> profile, int globalDefinitionNumber, List<FieldDefinition> fields) {
-        // Look up global definition number
-        String globalName = Constants.messageIdToName[globalDefinitionNumber]
-        boolean globalKnown = profile.containsKey(globalName)
+    public static void associateFieldDefinitionWithGlobalProfile(HashMap<String, List<Field>> profile, DefinitionMessage message, int globalDefinitionID) {
+        String globalName = Constants.messageIdToName[globalDefinitionID]
+        if (!profile.containsKey(globalName)) return;
 
-        fields.each {field ->
-            if (!globalKnown) {
-                field.setName("UNKNOWN")
-                return
+        List<Field> globalFields = profile[globalName]
+
+        message.getFieldDefinitions().eachWithIndex{ FieldDefinition entry, int idx ->
+            def globalField = globalFields.find{it.definitionNumber == entry.definitionNumber}
+            if (globalField != null) {
+                message.addFieldAssociation(idx, globalField)
             }
-
-            List<Field> profileFields = profile[globalName]
-            def profileField = profileFields.find{
-                it.getDefinitionNumber() == field.getDefinitionNumber()
-            }
-
-            if (profileField == null) {
-                field.setName("UNKNOWN")
-            } else {
-                field.setName(profileField.getName())
-            }
-
         }
 
-        return fields;
     }
 
 

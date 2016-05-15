@@ -1,55 +1,39 @@
 package com.benbr.parser.types
 
+import com.benbr.profile.Field
+
 class DefinitionMessage {
 
-    boolean equals(o) {
-        if (this.is(o)) return true
-        if (getClass() != o.class) return false
-
-        DefinitionMessage that = (DefinitionMessage) o
-
-        if (globalMessageNumber != that.globalMessageNumber) return false
-        if (reserved != that.reserved) return false
-        if (architectureType != that.architectureType) return false
-        if (developerFieldDefinitions != that.developerFieldDefinitions) return false
-        if (fieldDefinitions != that.fieldDefinitions) return false
-
-        return true
-    }
-
-    int hashCode() {
-        int result
-        result = reserved
-        result = 31 * result + architectureType.hashCode()
-        result = 31 * result + globalMessageNumber
-        result = 31 * result + (fieldDefinitions != null ? fieldDefinitions.hashCode() : 0)
-        result = 31 * result + (developerFieldDefinitions != null ? developerFieldDefinitions.hashCode() : 0)
-        return result
-    }
-
-    DefinitionMessage(ArchitectureType architectureType, int globalMessageNumber, List<FieldDefinition> fieldDefinitions) {
-        this.architectureType = architectureType
-        this.globalMessageNumber = globalMessageNumber
-        this.fieldDefinitions = fieldDefinitions
-    }
-
-    DefinitionMessage(int reserverd, ArchitectureType architectureType, int globalMessageNumber, List<FieldDefinition> fieldDefinitions, List<FieldDefinition> developerFieldDefinitions) {
-        this.reserved = reserverd
+    DefinitionMessage(int globalMessageNumber, ArchitectureType architectureType, int reserved, List<FieldDefinition> fieldDefinitions, List<FieldDefinition> developerFieldDefinitions) {
+        this.reserved = reserved
         this.architectureType = architectureType
         this.globalMessageNumber = globalMessageNumber
         this.fieldDefinitions = fieldDefinitions
         this.developerFieldDefinitions = developerFieldDefinitions
+        this.globalFields = []
     }
 
     private int reserved
     private ArchitectureType architectureType
     private int globalMessageNumber
-    private List<FieldDefinition> fieldDefinitions
+    private List<FieldDefinition> fieldDefinitions;
+    private List<Field> globalFields;
 
+    public void addFieldAssociation(int fieldDefinitionIndex, Field globalField) {
+        this.globalFields.add(fieldDefinitionIndex, globalField)
+    }
+
+    List<Field> getGlobalFields() {
+        return globalFields
+    }
+
+    List<FieldDefinition> getDeveloperFieldDefinitions() {
+        return developerFieldDefinitions
+    }
     // Usually not set (depends of reserved bit in header)
     private List<FieldDefinition> developerFieldDefinitions;
 
-    int getReserverd() {
+    int getReserved() {
         return reserved
     }
 
@@ -64,4 +48,25 @@ class DefinitionMessage {
     List<FieldDefinition> getFieldDefinitions() {
         return fieldDefinitions
     }
+
+    void setDeveloperFieldDefinitions(List<FieldDefinition> developerFieldDefinitions) {
+        this.developerFieldDefinitions = developerFieldDefinitions
+    }
+
+    boolean equals(o) {
+        if (this.is(o)) return true
+        if (getClass() != o.class) return false
+
+        DefinitionMessage that = (DefinitionMessage) o
+
+        if (globalMessageNumber != that.globalMessageNumber) return false
+        if (reserved != that.reserved) return false
+        if (architectureType != that.architectureType) return false
+        if (developerFieldDefinitions != that.developerFieldDefinitions) return false
+        if (fieldDefinitions != that.fieldDefinitions) return false
+        if (globalFields != that.globalFields) return false
+
+        return true
+    }
+
 }

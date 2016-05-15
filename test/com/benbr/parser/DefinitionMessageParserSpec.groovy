@@ -32,7 +32,7 @@ class DefinitionMessageParserSpec extends Specification {
         // Probably involves writing eqauls methods
         _message.architectureType == message.architectureType
         _message.globalMessageNumber == message.globalMessageNumber
-        _message.reserved == message.reserverd
+        _message.reserved == message.reserved
 
         fields.eachWithIndex { it, idx ->
             it.equals(_message.fieldDefinitions[idx])
@@ -50,13 +50,13 @@ class DefinitionMessageParserSpec extends Specification {
                 new FieldDefinition(9, 4, 134),
         ]
 
-        def message = new DefinitionMessage(0xFF, ArchitectureType.LITTLE_ENDIAN, 132, fields, null)
+        def message = new DefinitionMessage(132, ArchitectureType.LITTLE_ENDIAN, 0xFF, fields, null)
         def _message = new DefinitionMessageParser().parse(input, header)
 
         then:
         _message.architectureType == message.architectureType
         _message.globalMessageNumber == message.globalMessageNumber
-        _message.reserved == message.reserverd
+        _message.reserved == message.reserved
 
         fields.eachWithIndex { it, idx ->
             it.equals(_message.fieldDefinitions[idx])
