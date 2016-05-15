@@ -1,6 +1,6 @@
 package com.benbr.parser.types
 
-import com.benbr.profile.Field
+import com.benbr.profile.types.Field
 
 class DefinitionMessage {
 

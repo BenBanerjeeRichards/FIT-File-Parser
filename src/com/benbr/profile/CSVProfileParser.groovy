@@ -1,5 +1,7 @@
 package com.benbr.profile
 
+import com.benbr.profile.types.ArrayType
+import com.benbr.profile.types.Field
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVRecord
 
