@@ -53,6 +53,11 @@ class ProfileField {
         this.subFields = []
     }
 
+    boolean isDynamicField() {
+        return subFields.size() > 0
+    }
+
+
     List<Integer> getComponentBits() {
         return componentBits
     }
