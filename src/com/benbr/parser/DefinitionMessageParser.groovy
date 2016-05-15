@@ -7,7 +7,7 @@ import com.benbr.parser.types.DefinitionMessage
 import com.benbr.parser.types.FieldDefinition
 import com.benbr.parser.types.MessageHeader
 import com.benbr.profile.Constants
-import com.benbr.profile.types.Field
+import com.benbr.profile.types.ProfileField
 
 class DefinitionMessageParser {
 
@@ -55,11 +55,11 @@ class DefinitionMessageParser {
         return new FieldDefinition(bytes[0], bytes[1], bytes[2])
     }
 
-    public static void associateFieldDefinitionWithGlobalProfile(HashMap<String, List<Field>> profile, DefinitionMessage message, int globalDefinitionID) {
+    public static void associateFieldDefinitionWithGlobalProfile(HashMap<String, List<ProfileField>> profile, DefinitionMessage message, int globalDefinitionID) {
         String globalName = Constants.messageIdToName[globalDefinitionID]
         if (!profile.containsKey(globalName)) return;
 
-        List<Field> globalFields = profile[globalName]
+        List<ProfileField> globalFields = profile[globalName]
 
         message.getFieldDefinitions().eachWithIndex{ FieldDefinition entry, int idx ->
             def globalField = globalFields.find{it.definitionNumber == entry.definitionNumber}

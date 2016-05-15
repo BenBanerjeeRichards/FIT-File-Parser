@@ -1,10 +1,10 @@
 package com.benbr.profile
 
-import com.benbr.profile.types.Field
+import com.benbr.profile.types.ProfileField
 
 
 interface ProfileParser {
 
-    List<Field> getFields(File input);
+    List<ProfileField> getFields(File input);
 
 }

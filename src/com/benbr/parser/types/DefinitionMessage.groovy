@@ -1,6 +1,6 @@
 package com.benbr.parser.types
 
-import com.benbr.profile.types.Field
+import com.benbr.profile.types.ProfileField
 
 class DefinitionMessage {
 
@@ -17,13 +17,13 @@ class DefinitionMessage {
     private ArchitectureType architectureType
     private int globalMessageNumber
     private List<FieldDefinition> fieldDefinitions;
-    private List<Field> globalFields;
+    private List<ProfileField> globalFields;
 
-    public void addFieldAssociation(int fieldDefinitionIndex, Field globalField) {
+    public void addFieldAssociation(int fieldDefinitionIndex, ProfileField globalField) {
         this.globalFields.add(fieldDefinitionIndex, globalField)
     }
 
-    List<Field> getGlobalFields() {
+    List<ProfileField> getGlobalFields() {
         return globalFields
     }
 

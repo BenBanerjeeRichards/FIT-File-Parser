@@ -4,7 +4,7 @@ package com.benbr.profile.types
 enum ArrayType {
     SIZE_N, SIZE_INTEGER
 }
-class Field {
+class ProfileField {
 
     private Integer definitionNumber
     private String name
@@ -21,11 +21,11 @@ class Field {
     private String referenceFieldValue
     private List<String> components
     private List<Integer> componentBits
-    private List<Field> subFields;
+    private List<ProfileField> subFields;
 
 
     // There must be a better way to do immutability.
-    Field(Integer definitionNumber, String name, String type) {
+    ProfileField(Integer definitionNumber, String name, String type) {
         this.definitionNumber = definitionNumber
         this.name = name
         this.type = type
@@ -36,7 +36,7 @@ class Field {
         this.subFields = []
     }
 
-    Field(Integer definitionNumber, String name, String type, Boolean isArray, ArrayType arrayType, Integer size, List<Double> scale, String unit, Double offset, String referenceFieldName, String referenceFieldValue, List<String> components, List<Integer> componentBits) {
+    ProfileField(Integer definitionNumber, String name, String type, Boolean isArray, ArrayType arrayType, Integer size, List<Double> scale, String unit, Double offset, String referenceFieldName, String referenceFieldValue, List<String> components, List<Integer> componentBits) {
         this.definitionNumber = definitionNumber
         this.name = name
         this.type = type
@@ -109,18 +109,18 @@ class Field {
         return type
     }
 
-    List<Field> getSubFields() {
+    List<ProfileField> getSubFields() {
         return subFields
     }
 
-    void addSubField(Field field) {
+    void addSubField(ProfileField field) {
         this.subFields << field
     }
 
 
     @Override
     public String toString() {
-        return "Field{" +
+        return "ProfileField{" +
                 "definitionNumber=" + definitionNumber +
                 ", name='" + name + '\'' +
                 ", type='" + type + '\'' +

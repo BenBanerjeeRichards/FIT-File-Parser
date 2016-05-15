@@ -1,7 +1,7 @@
 package com.benbr.profile
 
 import com.benbr.profile.types.ArrayType
-import com.benbr.profile.types.Field
+import com.benbr.profile.types.ProfileField
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVRecord
 
@@ -13,12 +13,12 @@ class CSVProfileParser{
         this.file = file;
     }
 
-    HashMap<String, List<Field>> getFields() {
+    HashMap<String, List<ProfileField>> getFields() {
         List<CSVRecord> records = CSVFormat.EXCEL.parse(new FileReader(file)).getRecords()
 
-        HashMap<String, List<Field>> fields = [:]
+        HashMap<String, List<ProfileField>> fields = [:]
 
-        List<Field> currentFieldList = [];
+        List<ProfileField> currentFieldList = [];
         String currentMessageName = null;
         Boolean titleReached = false;
 
@@ -44,7 +44,7 @@ class CSVProfileParser{
                 continue;
             }
 
-            Field field =  parseField(record)
+            ProfileField field =  parseField(record)
             if (!isValidField(field)) continue;
             if (field.getDefinitionNumber() == null) {
                 currentFieldList.last().addSubField(field)
@@ -56,20 +56,20 @@ class CSVProfileParser{
         return fields;
     }
 
-    static boolean isValidField(Field field) {
+    static boolean isValidField(ProfileField field) {
         return !(isBlankField(field) || isTitle(field))
     }
 
-    static boolean isBlankField(Field field) {
+    static boolean isBlankField(ProfileField field) {
         return  (field.getDefinitionNumber() == null && field.getName().equals("")
                 && field.getType().equals(""))
     }
 
-    static boolean isTitle(Field field){
+    static boolean isTitle(ProfileField field){
         return (field.getDefinitionNumber() == null && field.getName().equals("") && field.getType().size() > 0)
     }
 
-    static Field parseField(CSVRecord record) {
+    static ProfileField parseField(CSVRecord record) {
         Integer definitionNum = parseDefinitionNumber(record.get(1))
         String name = record.get(2)
         String type = record.get(3)
@@ -89,7 +89,7 @@ class CSVProfileParser{
         def refFieldName = record.get(11)
         def refFieldValue = record.get(12)
 
-        return new Field(definitionNum, name, type, arraySize != null, arrayType, arraySize, scale, units, offset, refFieldName, refFieldValue, components, bits)
+        return new ProfileField(definitionNum, name, type, arraySize != null, arrayType, arraySize, scale, units, offset, refFieldName, refFieldValue, components, bits)
     }
 
 
