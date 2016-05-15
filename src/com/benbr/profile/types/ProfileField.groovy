@@ -17,8 +17,8 @@ class ProfileField {
     private List<Double> scale
     private String unit
     private Double offset
-    private String referenceFieldName
-    private String referenceFieldValue
+    private List<String> referenceFieldNames
+    private List<String> referenceFieldValue
     private List<String> components
     private List<Integer> componentBits
     private List<ProfileField> subFields;
@@ -36,7 +36,7 @@ class ProfileField {
         this.subFields = []
     }
 
-    ProfileField(Integer definitionNumber, String name, String type, Boolean isArray, ArrayType arrayType, Integer size, List<Double> scale, String unit, Double offset, String referenceFieldName, String referenceFieldValue, List<String> components, List<Integer> componentBits) {
+    ProfileField(Integer definitionNumber, String name, String type, Boolean isArray, ArrayType arrayType, Integer size, List<Double> scale, String unit, Double offset, List<String> referenceFieldName, List<String> referenceFieldValue, List<String> components, List<Integer> componentBits) {
         this.definitionNumber = definitionNumber
         this.name = name
         this.type = type
@@ -46,7 +46,7 @@ class ProfileField {
         this.scale = scale
         this.unit = unit
         this.offset = offset
-        this.referenceFieldName = referenceFieldName
+        this.referenceFieldNames = referenceFieldName
         this.referenceFieldValue = referenceFieldValue
         this.components = components
         this.componentBits = componentBits
@@ -90,11 +90,11 @@ class ProfileField {
         return accumulate
     }
 
-    String getReferenceFieldName() {
-        return referenceFieldName
+    List<String> getReferenceFieldName() {
+        return referenceFieldNames
     }
 
-    String getReferenceFieldValue() {
+    List<String> getReferenceFieldValue() {
         return referenceFieldValue
     }
 
@@ -135,7 +135,7 @@ class ProfileField {
                 ", scale=" + scale +
                 ", unit='" + unit + '\'' +
                 ", offset=" + offset +
-                ", referenceFieldName='" + referenceFieldName + '\'' +
+                ", referenceFieldNames='" + referenceFieldNames + '\'' +
                 ", referenceFieldValue='" + referenceFieldValue + '\'' +
                 ", components=" + components +
                 ", componentBits=" + componentBits +

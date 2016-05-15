@@ -86,12 +86,11 @@ class CSVProfileParser{
         double offset = parseDouble(record.get(7))
         def units = record.get(8)
         def bits = stringListToIntList(parseList(record.get(9)))
-        def refFieldName = record.get(11)
-        def refFieldValue = record.get(12)
+        def refFieldName = parseList(record.get(11))
+        def refFieldValue = parseList(record.get(12))
 
         return new ProfileField(definitionNum, name, type, arraySize != null, arrayType, arraySize, scale, units, offset, refFieldName, refFieldValue, components, bits)
     }
-
 
     static Integer parseDefinitionNumber(String input) {
         input = input.trim()
@@ -135,6 +134,10 @@ class CSVProfileParser{
 
 
     static List<String> parseList(String text) {
+        // TODO find groovy method to remove new line operations
+        text = text.replace("\n", "")
+        text = text.replace("\r", "")
+
         List<String> components = text.split(",")
         if (components.last().trim().size() == 0) {
             components.remove(components.size() - 1)
