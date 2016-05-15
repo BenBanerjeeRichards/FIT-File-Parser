@@ -87,7 +87,7 @@ class Constants {
     ]
 
     // s => signed, u => unsigned, z => ?
-    public static final HashMap BaseTypes = [
+    public static final HashMap baseTypes = [
             0   : "enum",
             1   : "sint8",
             2   : "uint8",
