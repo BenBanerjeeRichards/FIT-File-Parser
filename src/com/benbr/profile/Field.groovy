@@ -6,9 +6,7 @@ enum ArrayType {
 }
 class Field {
 
-    // Init using map constructor
-
-    private int definitionNumber
+    private Integer definitionNumber
     private String name
     private String type
 
@@ -27,7 +25,7 @@ class Field {
 
 
     // There must be a better way to do immutability.
-    Field(int definitionNumber, String name, String type) {
+    Field(Integer definitionNumber, String name, String type) {
         this.definitionNumber = definitionNumber
         this.name = name
         this.type = type
@@ -97,7 +95,7 @@ class Field {
         return components
     }
 
-    int getDefinitionNumber() {
+    Integer getDefinitionNumber() {
         return definitionNumber
     }
 
