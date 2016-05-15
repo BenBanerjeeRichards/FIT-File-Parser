@@ -45,7 +45,6 @@ class DefinitionMessageParser {
             devFields = null;
         }
 
-
         return new DefinitionMessage(reserved, architecture, globalMessageNum, fields, devFields)
     }
 
@@ -83,7 +82,6 @@ class DefinitionMessageParser {
         }
 
         return fields;
-
     }
 
 
