@@ -1,4 +1,4 @@
-package com.benbr.profile
+package com.benbr.profile.types
 
 
 enum ArrayType {
