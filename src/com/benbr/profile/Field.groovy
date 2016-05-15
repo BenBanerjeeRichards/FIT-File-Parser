@@ -19,9 +19,9 @@ class Field {
     private Double offset
     private String referenceFieldName
     private String referenceFieldValue
-    List<String> components
-    List<Integer> componentBits
-
+    private List<String> components
+    private List<Integer> componentBits
+    private List<Field> subFields;
 
 
     // There must be a better way to do immutability.
@@ -33,6 +33,7 @@ class Field {
         isArray = false;
         scale = [1]
         offset = 0
+        this.subFields = []
     }
 
     Field(Integer definitionNumber, String name, String type, Boolean isArray, ArrayType arrayType, Integer size, List<Double> scale, String unit, Double offset, String referenceFieldName, String referenceFieldValue, List<String> components, List<Integer> componentBits) {
@@ -49,6 +50,7 @@ class Field {
         this.referenceFieldValue = referenceFieldValue
         this.components = components
         this.componentBits = componentBits
+        this.subFields = []
     }
 
     List<Integer> getComponentBits() {
@@ -106,6 +108,15 @@ class Field {
     String getType() {
         return type
     }
+
+    List<Field> getSubFields() {
+        return subFields
+    }
+
+    void addSubField(Field field) {
+        this.subFields << field
+    }
+
 
     @Override
     public String toString() {

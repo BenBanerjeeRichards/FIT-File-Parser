@@ -14,11 +14,9 @@ class CSVProfileParser{
     HashMap<String, List<Field>> getFields() {
         List<CSVRecord> records = CSVFormat.EXCEL.parse(new FileReader(file)).getRecords()
 
-        HashMap<String, List<Field>> fields = []
+        HashMap<String, List<Field>> fields = [:]
 
-        List<List<Field>> fieldsList = [];
         List<Field> currentFieldList = [];
-        List<String> fieldNames = []
         String currentMessageName = null;
         Boolean titleReached = false;
 
@@ -44,14 +42,33 @@ class CSVProfileParser{
                 continue;
             }
 
-            currentFieldList <<  parseField(record)
+            Field field =  parseField(record)
+            if (!isValidField(field)) continue;
+            if (field.getDefinitionNumber() == null) {
+                currentFieldList.last().addSubField(field)
+            } else {
+                currentFieldList << field
+            }
         }
 
         return fields;
     }
 
+    static boolean isValidField(Field field) {
+        return !(isBlankField(field) || isTitle(field))
+    }
+
+    static boolean isBlankField(Field field) {
+        return  (field.getDefinitionNumber() == null && field.getName().equals("")
+                && field.getType().equals(""))
+    }
+
+    static boolean isTitle(Field field){
+        return (field.getDefinitionNumber() == null && field.getName().equals("") && field.getType().size() > 0)
+    }
+
     static Field parseField(CSVRecord record) {
-        int definitionNum = parseInt(record.get(1))
+        Integer definitionNum = parseDefinitionNumber(record.get(1))
         String name = record.get(2)
         String type = record.get(3)
         Integer arraySize = parseArrayField(record.get(4))
@@ -69,10 +86,16 @@ class CSVProfileParser{
         def bits = stringListToIntList(parseList(record.get(9)))
         def refFieldName = record.get(11)
         def refFieldValue = record.get(12)
-        record
+
         return new Field(definitionNum, name, type, arraySize != null, arrayType, arraySize, scale, units, offset, refFieldName, refFieldValue, components, bits)
     }
 
+
+    static Integer parseDefinitionNumber(String input) {
+        input = input.trim()
+        if (input.size() == 0) return null;
+        return parseInt(input)
+    }
 
     static Integer parseInt(String input) {
         input = input.trim()
@@ -139,7 +162,5 @@ class CSVProfileParser{
 
         return true;
     }
-
-
 
 }
