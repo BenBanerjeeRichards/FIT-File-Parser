@@ -10,7 +10,13 @@ class DefinitionMessage {
         this.globalMessageNumber = globalMessageNumber
         this.fieldDefinitions = fieldDefinitions
         this.developerFieldDefinitions = developerFieldDefinitions
-        this.globalFields = []
+        globalFields = []
+
+        // Vanilla loop prevents concurrent accesss exceptions
+        for (int i = 0; i < fieldDefinitions.size(); i++) {
+            this.globalFields.add(i, null)
+        }
+
     }
 
     private int reserved

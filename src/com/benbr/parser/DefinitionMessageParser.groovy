@@ -55,7 +55,6 @@ class DefinitionMessageParser {
         return new FieldDefinition(bytes[0], bytes[1], bytes[2])
     }
 
-    public
     static void associateFieldDefinitionWithGlobalProfile(HashMap<String, List<ProfileField>> profile, DefinitionMessage message, int globalDefinitionID) {
         String globalName = Constants.messageIdToName[globalDefinitionID]
         if (!profile.containsKey(globalName)) return;
@@ -64,9 +63,14 @@ class DefinitionMessageParser {
 
         message.getFieldDefinitions().eachWithIndex { FieldDefinition entry, int idx ->
             def globalField = globalFields.find { it.definitionNumber == entry.definitionNumber }
-            if (globalField != null) {
+            if (globalField == null) {
+                def nullField = new ProfileField(null, "Unknown", null)
+                message.addFieldAssociation(idx, nullField)
+            } else {
                 message.addFieldAssociation(idx, globalField)
             }
+
+
         }
 
     }

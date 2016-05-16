@@ -48,7 +48,13 @@ class DataMessageParser {
 
             // TODO support strings
             long value = Util.combineBigEndian(bytes.toList())
-            message.fields[globalField.getName()] = value
+
+            if (globalField == null) {
+                // TODO log warning
+                message.fields[generateUniqueUnknownKey(message)] = value
+            } else {
+                message.fields[globalField.getName()] = value
+            }
         }
         message.fields.each {key, value ->
             println "$key : $value"
@@ -85,6 +91,14 @@ class DataMessageParser {
     private void resolveDynamicFields(DataMessage message, DefinitionMessage localDefinition) {
         localDefinition.getFieldDefinitions().eachWithIndex {fieldDefinition, idx ->
             ProfileField globalField = localDefinition.getGlobalFields()[idx]
+
+            if (globalField == null) {
+                // TODO log warning
+
+                // Can not resolve dynamic field as the field can not be found in profile
+                return
+            }
+
             if (!globalField.isDynamicField()) return;
 
             ProfileField newDynamicDefinition = getFieldDefinition(message, localDefinition, globalField)
@@ -117,7 +131,8 @@ class DataMessageParser {
         // Look up reference field
         def referenceField = message.fields.find { it.key == referenceName }
         if (referenceField == null) {
-            throw new FITDecodeException("No reference field with name $referenceName found in DataMessage")
+            // TODO log warning
+            return false;
         }
 
         String referenceFieldType = referenceField.key
