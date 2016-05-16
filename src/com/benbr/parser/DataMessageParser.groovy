@@ -10,7 +10,7 @@ import com.benbr.profile.types.EnumerationType
 import com.benbr.profile.types.ProfileField
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
-
+  
 class DataMessageParser {
 
     private HashMap<String, List<ProfileField>> globalProfile;
