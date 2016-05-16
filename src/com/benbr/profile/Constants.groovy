@@ -5,7 +5,7 @@ import java.lang.reflect.Type
 class Constants {
 
 
-    // Hash map uused instad of an array as it provides more flexibility when assigning
+    // Hash map used instead of an array as it provides more flexibility when assigning
     // indexes to the strings - there are some cases when the ID's do not increment by 1 -
     // using a map is more clear
 
