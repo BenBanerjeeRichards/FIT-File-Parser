@@ -24,7 +24,7 @@ class DefinitionMessageParser {
             globMessageBytes = Util.littleToBigEndian(globMessageBytes.toList())
         }
 
-        int globalMessageNum = globMessageBytes[0] | globMessageBytes[1] << 8;
+        int globalMessageNum = globMessageBytes[1] | globMessageBytes[0] << 8;
         int numFields = headerWithoutFields[4]
 
         List<FieldDefinition> fields = [];
