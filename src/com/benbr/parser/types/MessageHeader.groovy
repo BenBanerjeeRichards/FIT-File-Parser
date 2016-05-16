@@ -42,4 +42,14 @@ class MessageHeader {
     int getMessageSpecific() {
         return messageSpecific
     }
+
+
+    @Override
+    public String toString() {
+        return "MessageHeader{" +
+                "messageType=" + messageType +
+                ", headerType=" + headerType +
+                ", localMessageType=" + localMessageType +
+                '}';
+    }
 }
