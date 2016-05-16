@@ -10,7 +10,7 @@ import com.benbr.profile.types.EnumerationType
 import com.benbr.profile.types.ProfileField
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
-  
+
 class DataMessageParser {
 
     private HashMap<String, List<ProfileField>> globalProfile;
@@ -58,6 +58,26 @@ class DataMessageParser {
         return null;
     }
 
+    private ProfileField getFieldDefinition(DataMessage message, DefinitionMessage localDefinition, ProfileField globalField) {
+        if (!globalField.isDynamicField()) return globalField;
+
+        for (def subfield : globalField.getSubFields()) {
+            // TODO figure out why .eachWithIndex does not work here
+            int referenceIndex = 0;
+
+            for (int i = 0; i < subfield.getReferenceFieldName().size(); i++) {
+                def referenceName = subfield.getReferenceFieldName()[i]
+                def referenceValue = subfield.getReferenceFieldValue()[i]
+
+                if (referenceFieldContainsValue(message, referenceName, referenceValue)) {
+                    return subfield;
+                }
+            }
+        }
+
+        return globalField
+    }
+
     private boolean referenceFieldContainsValue(DataMessage message, String referenceName, String referenceValue) {
         // Look up reference field
         def referenceField = message.fields.find { it.key == referenceName }
@@ -79,31 +99,6 @@ class DataMessageParser {
         def enumType = referenceTypeEnum.find { it.value == referenceValue }
         if (enumType == null) return false;
         return (enumType.key == parentFieldValue)
-    }
-
-    private ProfileField getFieldDefinition(DataMessage message, DefinitionMessage localDefinition, ProfileField globalField) {
-        if (globalField == null) {
-            println ""
-        }
-
-        if (!globalField.isDynamicField()) return globalField;
-
-        for (def subfield : globalField.getSubFields()) {
-
-            // TODO figure out why .eachWithIndex does not work here
-            int referenceIndex = 0;
-            for (def referenceName : subfield.getReferenceFieldName()) {
-                def referenceValue = subfield.getReferenceFieldValue()[referenceIndex]
-
-                if (referenceFieldContainsValue(message, referenceName, referenceValue)) {
-                    return subfield;
-                }
-
-                referenceIndex++;
-            }
-        }
-
-        return globalField
     }
 
 
