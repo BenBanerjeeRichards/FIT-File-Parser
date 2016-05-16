@@ -60,6 +60,28 @@ class DataMessageParser {
         return null;
     }
 
+    /**
+     * Generates unknown field names in the form unknown_N, where N is an integer.
+     * For example, unknown_1, unknown_2...
+      * @param message
+     */
+    private static String generateUniqueUnknownKey(DataMessage message) {
+        List postfixes = []
+
+        message.fields.each {name, value ->
+            name = (String)name;
+            def parts = name.split("unknown")
+
+            if (parts.size() == 2) {
+                postfixes << parts[1].replace("_", "").toInteger()
+            }
+        }
+
+        int postfix = (postfixes.max() == null) ? 1 : postfixes.max() + 1;
+
+        return "unknown_${postfix}"
+    }
+
     private void resolveDynamicFields(DataMessage message, DefinitionMessage localDefinition) {
         localDefinition.getFieldDefinitions().eachWithIndex {fieldDefinition, idx ->
             ProfileField globalField = localDefinition.getGlobalFields()[idx]
