@@ -40,8 +40,6 @@ class DataMessageParser {
         def localDefinition = localDefinitionMatches.value
         localDefinition.getFieldDefinitions().eachWithIndex { fieldDefinition, idx ->
             def globalField = localDefinition.getGlobalFields()[idx]
-            globalField = getFieldDefinition(message, localDefinition, globalField)
-
             int[] bytes = Util.readUnsignedValues(inputStream, fieldDefinition.getSize())
 
             if (localDefinition.getArchitectureType() == ArchitectureType.LITTLE_ENDIAN) {
@@ -50,12 +48,27 @@ class DataMessageParser {
 
             // TODO support strings
             long value = Util.combineBigEndian(bytes.toList())
-            println "${globalField.getName()} : ${value} : ${fieldDefinition.getSize()}"
             message.fields[globalField.getName()] = value
-
+        }
+        message.fields.each {key, value ->
+            println "$key : $value"
         }
 
+        resolveDynamicFields(message, localDefinition)
+
+
         return null;
+    }
+
+    private void resolveDynamicFields(DataMessage message, DefinitionMessage localDefinition) {
+        localDefinition.getFieldDefinitions().eachWithIndex {fieldDefinition, idx ->
+            ProfileField globalField = localDefinition.getGlobalFields()[idx]
+            if (!globalField.isDynamicField()) return;
+
+            ProfileField newDynamicDefinition = getFieldDefinition(message, localDefinition, globalField)
+            String previousValue = message.fields.remove(globalField.getName())
+            message.fields[newDynamicDefinition.getName()] = previousValue
+        }
     }
 
     private ProfileField getFieldDefinition(DataMessage message, DefinitionMessage localDefinition, ProfileField globalField) {
