@@ -3,9 +3,9 @@ package com.benbr.parser
 import com.benbr.parser.types.ArchitectureType
 import com.benbr.parser.types.DefinitionMessage
 import com.benbr.parser.types.FieldDefinition
-import com.benbr.parser.types.MessageHeader
 import com.benbr.parser.types.MessageHeaderType
 import com.benbr.parser.types.MessageType
+import com.benbr.parser.types.MessageHeader
 import spock.lang.Specification
 
 class DefinitionMessageParserSpec extends Specification {

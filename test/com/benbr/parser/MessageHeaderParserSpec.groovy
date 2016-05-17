@@ -19,9 +19,21 @@ class MessageHeaderParserSpec extends Specification {
         where:
         header  | reserved   | localMessageType | messageSpecific   | messageType           | headerType
         0x00    |   0        |  0               |   0               | MessageType.DATA      | MessageHeaderType.NORMAL
-        0xFF    |   1        |  15              |   1               | MessageType.DEFINITION| MessageHeaderType.COMPRESSED_TIMESTAMP
         0x53    |   1        |  3               |   0               | MessageType.DEFINITION| MessageHeaderType.NORMAL
-        0xAB    |   0        |  11              |   1               | MessageType.DATA      | MessageHeaderType.COMPRESSED_TIMESTAMP
     }
+
+    def "Given compressed timestamp headers, they are parsed correcly"() {
+        expect:
+        def messageHeader = new MessageHeaderParser().parse(header)
+        messageHeader.messageType == messageType
+        messageHeader.headerType == headerType
+        messageHeader.localMessageType == localMessageType
+        messageHeader.timestampOffset == timestamp
+
+        where:
+        header  | localMessageType |  messageType           | headerType                                | timestamp
+        0xEB    |   3              |  MessageType.DATA      | MessageHeaderType.COMPRESSED_TIMESTAMP    | 11
+    }
+
 
 }

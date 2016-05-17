@@ -16,10 +16,22 @@ class MessageHeader {
         this.messageSpecific = messageSpecific
     }
 
+    MessageHeader(MessageType messageType, MessageHeaderType headerType, int localMessageType, int timestampOffset) {
+        this.messageType = messageType
+        this.headerType = headerType
+        this.localMessageType = localMessageType
+        this.timestampOffset = timestampOffset
+    }
+
+
     private MessageType messageType;
     private MessageHeaderType headerType;
     private int localMessageType;
+    private int timestampOffset;
 
+    int getTimestampOffset() {
+        return timestampOffset
+    }
     private int reserved;
     private int messageSpecific;
 

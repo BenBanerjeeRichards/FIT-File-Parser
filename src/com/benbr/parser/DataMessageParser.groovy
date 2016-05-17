@@ -4,8 +4,8 @@ import com.benbr.FITDecodeException
 import com.benbr.Util
 import com.benbr.parser.types.ArchitectureType
 import com.benbr.parser.types.DefinitionMessage
-import com.benbr.parser.types.MessageHeader
 import com.benbr.parser.types.MessageHeaderType
+import com.benbr.parser.types.MessageHeader
 import com.benbr.profile.types.EnumerationType
 import com.benbr.profile.types.ProfileField
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
@@ -21,12 +21,7 @@ class DataMessageParser {
         this.types = types
     }
 
-    // TODO check bound global profile fields to ensure that they are correct
     public DataMessage parse(DataInputStream inputStream, MessageHeader header, HashMap<Integer, DefinitionMessage> localDefinitions) {
-        if (header.headerType == MessageHeaderType.COMPRESSED_TIMESTAMP) {
-            throw new NotImplementedException()     // Coming soon
-        }
-
         def localDefinitionMatches = localDefinitions.find {
             it.key == header.localMessageType
         }
@@ -56,14 +51,10 @@ class DataMessageParser {
                 message.fields[globalField.getName()] = value
             }
         }
-        message.fields.each {key, value ->
-            println "$key : $value"
-        }
 
         resolveDynamicFields(message, localDefinition)
 
-
-        return null;
+        return message;
     }
 
     /**
