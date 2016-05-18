@@ -49,6 +49,9 @@ class DataMessageParser {
                 message.fields[generateUniqueUnknownKey(message)] = value
             } else {
                 message.fields[globalField.getName()] = value
+                if (globalField.isArray) {
+                    println "FOUND ARRAY ${globalField.getName()}"
+                }
             }
         }
 
@@ -92,19 +95,17 @@ class DataMessageParser {
 
             if (!globalField.isDynamicField()) return;
 
-            ProfileField newDynamicDefinition = getFieldDefinition(message, localDefinition, globalField)
+            ProfileField newDynamicDefinition = getFieldDefinition(message, globalField)
             String previousValue = message.fields.remove(globalField.getName())
             message.fields[newDynamicDefinition.getName()] = previousValue
         }
     }
 
-    private ProfileField getFieldDefinition(DataMessage message, DefinitionMessage localDefinition, ProfileField globalField) {
+    private ProfileField getFieldDefinition(DataMessage message, ProfileField globalField) {
         if (!globalField.isDynamicField()) return globalField;
 
         for (def subfield : globalField.getSubFields()) {
             // TODO figure out why .eachWithIndex does not work here
-            int referenceIndex = 0;
-
             for (int i = 0; i < subfield.getReferenceFieldName().size(); i++) {
                 def referenceName = subfield.getReferenceFieldName()[i]
                 def referenceValue = subfield.getReferenceFieldValue()[i]
