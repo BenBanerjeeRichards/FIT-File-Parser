@@ -1,7 +1,7 @@
 package com.benbr.parser.types
 
 class FileHeader {
-    FileHeader(int size, int protocolVersion, int profileVersion, int dataSize, char[] dataType, int crc) {
+    FileHeader(int size, int protocolVersion, int profileVersion, int dataSize, char[] dataType, Integer crc) {
         this.size = size
         this.protocolVersion = protocolVersion
         this.profileVersion = profileVersion
@@ -34,8 +34,8 @@ class FileHeader {
     // 4 byte string. Should be '.FIT'.
     private char[] dataType;
 
-    // uint16.
-    private int crc;
+    // uint16, nullable (12 byte headers)
+    private Integer crc;
 
 
     int getSize() {
@@ -58,7 +58,7 @@ class FileHeader {
         return dataType
     }
 
-    int getCrc() {
+    Integer getCrc() {
         return crc
     }
 }

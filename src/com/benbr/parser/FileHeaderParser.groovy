@@ -17,7 +17,10 @@ class FileHeaderParser {
         dataType[1] = bytes[8]
         dataType[2] = bytes[9]
         dataType[3] = bytes[10]
-        int crc = bytes[12] << 8 | bytes[11]
+        Integer crc = null;
+        if (headerSize == 14) {
+            crc = bytes[12] << 8 | bytes[11]
+        }
 
         return new FileHeader(headerSize, protocolVersion, profileVersion, dataSize, dataType, crc)
     }
