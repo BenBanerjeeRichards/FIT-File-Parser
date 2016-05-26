@@ -4,6 +4,7 @@ import com.benbr.FITDecodeException
 import com.benbr.Util
 import com.benbr.parser.types.ArchitectureType
 import com.benbr.parser.types.DefinitionMessage
+import com.benbr.parser.types.FieldDefinition
 import com.benbr.parser.types.MessageHeader
 import com.benbr.profile.Constants
 import com.benbr.profile.types.EnumerationType
@@ -35,23 +36,28 @@ class DataMessageParser {
             def globalField = localDefinition.getGlobalFields()[idx]
             int[] bytes = Util.readUnsignedValues(inputStream, fieldDefinition.getSize())
 
-            if (localDefinition.getArchitectureType() == ArchitectureType.LITTLE_ENDIAN) {
-                bytes = Util.littleToBigEndian(bytes.toList())
-            }
-
-            Object value = TypeEncoder.encode(bytes.toList(), fieldDefinition.getType())
-
-            if (globalField?.getType() != "string") {
-                value = TypeEncoder.applyScaleAndOffset(value, globalField)
-            }
-
             String fieldName = (globalField == null) ? generateUniqueUnknownKey(message) : globalField.getName()
-            message.fields[fieldName] = value
+            message.fields[fieldName] = getFieldValue(bytes.toList(), localDefinition, fieldDefinition, globalField)
         }
 
         resolveDynamicFields(message, localDefinition)
 
         return message;
+    }
+
+    private Object getFieldValue(List<Integer> valueBytes, DefinitionMessage definitionMessage, FieldDefinition fieldDefinition, ProfileField globalDefinition) {
+        if (definitionMessage.getArchitectureType() == ArchitectureType.LITTLE_ENDIAN) {
+            valueBytes = Util.littleToBigEndian(valueBytes.toList())
+        }
+
+        Object value = TypeEncoder.encode(valueBytes.toList(), fieldDefinition.getType())
+
+        if (globalDefinition?.getType() != "string") {
+            value = TypeEncoder.applyScaleAndOffset(value, globalDefinition)
+        }
+
+        return value
+
     }
 
     /**
