@@ -1,6 +1,5 @@
 package com.benbr.parser
 
-import com.benbr.parser.types.FieldDefinition
 import com.benbr.profile.Constants
 import com.benbr.profile.types.ProfileField
 

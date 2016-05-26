@@ -6,10 +6,7 @@ import com.benbr.profile.CSVProfileParser
 import com.benbr.profile.CSVTypeParser
 import com.benbr.profile.types.EnumerationType
 import com.benbr.profile.types.ProfileField
-import org.apache.poi.hdgf.streams.Stream
 
-import javax.xml.crypto.Data
-import java.util.concurrent.LinkedBlockingDeque
 import java.util.concurrent.LinkedBlockingQueue
 
 class FitParser {
@@ -58,6 +55,5 @@ class FitParser {
 
         return messageQueue
     }
-
 
 }

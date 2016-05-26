@@ -1,9 +1,8 @@
 package com.benbr.parser
 
+import com.benbr.parser.types.MessageHeader
 import com.benbr.parser.types.MessageHeaderType
 import com.benbr.parser.types.MessageType
-import com.benbr.parser.types.MessageHeader
-import sun.plugin2.message.Message
 
 class MessageHeaderParser {
 

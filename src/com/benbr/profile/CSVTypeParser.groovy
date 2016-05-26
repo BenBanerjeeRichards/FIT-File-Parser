@@ -1,7 +1,6 @@
 package com.benbr.profile
 
 import com.benbr.profile.types.EnumerationType
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVRecord
 

@@ -6,7 +6,6 @@ import com.benbr.parser.types.ArchitectureType
 import com.benbr.parser.types.DefinitionMessage
 import com.benbr.parser.types.FieldDefinition
 import com.benbr.parser.types.MessageHeader
-import com.benbr.profile.Constants
 import com.benbr.profile.types.EnumerationType
 import com.benbr.profile.types.ProfileField
 

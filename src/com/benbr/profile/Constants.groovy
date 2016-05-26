@@ -1,7 +1,5 @@
 package com.benbr.profile
 
-import java.lang.reflect.Type
-
 class Constants {
 
 
@@ -86,6 +84,8 @@ class Constants {
             207 : "developer_data_id"
     ]
 
+
+    // TODO sort this mapping out.
     // s => signed, u => unsigned, z => ?
     public static final HashMap baseTypes = [
             0   : "enum",
