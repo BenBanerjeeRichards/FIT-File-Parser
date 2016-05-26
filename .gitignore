@@ -2,11 +2,10 @@
 .idea
 *.csv
 *.xlsx
+*.bak
+*.fit
 out
 scripts
 lib
 src/com/benbr/profile/XLSXProfileParser.groovy
 standards
-fit.fit
-*.bak
-*.fit
