@@ -32,15 +32,6 @@ class Util {
 
     }
 
-    static long combineBigEndian(List<Integer> input) {
-        long output = 0L;
-        input.eachWithIndex { it, idx ->
-            long shift = (8L * (input.size().toLong() - idx.toLong() - 1L)).toLong()
-            output |= (it.toLong() << shift).toLong()
-        }
-
-        return output;
-    }
 
     static int typeNameToNumBytes(HashMap<String, EnumerationType> profile, String typeName) {
         // Is it a base type

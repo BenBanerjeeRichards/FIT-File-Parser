@@ -4,12 +4,10 @@ import com.benbr.FITDecodeException
 import com.benbr.Util
 import com.benbr.parser.types.ArchitectureType
 import com.benbr.parser.types.DefinitionMessage
-import com.benbr.parser.types.MessageHeaderType
 import com.benbr.parser.types.MessageHeader
+import com.benbr.profile.Constants
 import com.benbr.profile.types.EnumerationType
 import com.benbr.profile.types.ProfileField
-import sun.reflect.generics.reflectiveObjects.NotImplementedException
-
 
 class DataMessageParser {
 
@@ -41,18 +39,14 @@ class DataMessageParser {
                 bytes = Util.littleToBigEndian(bytes.toList())
             }
 
-            // TODO support strings
-            long value = Util.combineBigEndian(bytes.toList())
+            Object value = TypeEncoder.encode(bytes.toList(), fieldDefinition.getType())
 
-            if (globalField == null) {
-                // TODO log warning
-                message.fields[generateUniqueUnknownKey(message)] = value
-            } else {
-                message.fields[globalField.getName()] = value
-                if (globalField.isArray) {
-                    println "FOUND ARRAY ${globalField.getName()}"
-                }
+            if (globalField?.getType() != "string") {
+                value = TypeEncoder.applyScaleAndOffset(value, globalField)
             }
+
+            String fieldName = (globalField == null) ? generateUniqueUnknownKey(message) : globalField.getName()
+            message.fields[fieldName] = value
         }
 
         resolveDynamicFields(message, localDefinition)
