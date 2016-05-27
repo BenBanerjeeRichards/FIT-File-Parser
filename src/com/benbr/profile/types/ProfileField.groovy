@@ -62,7 +62,7 @@ class ProfileField {
         return componentBits
     }
 
-    boolean getIsArray() {
+    boolean isArray() {
         return isArray
     }
 
