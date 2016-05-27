@@ -20,17 +20,13 @@ class DataMessageParser {
     }
 
     public DataMessage parse(DataInputStream inputStream, MessageHeader header, HashMap<Integer, DefinitionMessage> localDefinitions) {
-        def localDefinitionMatches = localDefinitions.find {
-            it.key == header.localMessageType
-        }
+        def localDefinition = localDefinitions[header.getLocalMessageType()]
+        if (!localDefinition) {
+            throw new FITDecodeException("Data message type ${header.getLocalMessageType()} not defined in local scope")
 
-        if (localDefinitionMatches == null) {
-            throw new FITDecodeException("Data message type ${header.localMessageType} not defined in local scope")
         }
-
         DataMessage message = new DataMessage()
 
-        def localDefinition = localDefinitionMatches.value
         localDefinition.getFieldDefinitions().eachWithIndex { fieldDefinition, idx ->
             def globalField = localDefinition.getGlobalFields()[idx]
             int[] bytes = Util.readUnsignedValues(inputStream, fieldDefinition.getSize())
