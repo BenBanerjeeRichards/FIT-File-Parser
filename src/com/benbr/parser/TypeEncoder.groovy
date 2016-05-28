@@ -34,12 +34,12 @@ class TypeEncoder<T> {
     }
 
 
-    static T applyScaleAndOffset(Number value, ProfileField definition) {
+    static T applyScaleAndOffset(Number value, ProfileField definition, int componentIndex=0) {
         if (definition == null) {
             return value
         }
 
-        float scale = definition.getScale()[0] == null ? 1 : definition.getScale()[0]
+        float scale = definition.getScale()[componentIndex] == null ? 1 : definition.getScale()[componentIndex]
         if (scale == 1f) {
             return value - (int)definition.getOffset()
         }
