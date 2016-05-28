@@ -1,5 +1,6 @@
 package com.benbr.parser
 
+import com.benbr.Util
 import com.benbr.parser.types.DefinitionMessage
 import com.benbr.parser.types.MessageType
 import com.benbr.profile.CSVProfileParser
@@ -20,12 +21,18 @@ class FitParser {
     }
 
     private void parseFile(File fitFile, Queue<DataMessage> messageQueue) {
-        DataInputStream fitStream = new DataInputStream(new FileInputStream(fitFile))
+        DataInputStream fitStream = new DataInputStream(new DataInputStream(new FileInputStream(fitFile)))
         def locals = new HashMap<Integer, DefinitionMessage>()
-        new FileHeaderParser().parseHeader(fitStream)
+        def fileHeader = new FileHeaderParser().parseHeader(fitStream)
 
         while (fitStream.available() > 0) {
-            def header = new MessageHeaderParser().parse(fitStream.read())
+            if (Util.getBytesRead() - fileHeader.getSize() >= fileHeader.getDataSize()) {
+                // Complete
+                return
+            }
+
+            def headerByte = Util.read(fitStream)
+            def header = new MessageHeaderParser().parse(headerByte)
 
             if (header.messageType == MessageType.DEFINITION) {
                 DefinitionMessage message = new DefinitionMessageParser().parse(fitStream, header)
