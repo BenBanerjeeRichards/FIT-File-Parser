@@ -5,6 +5,14 @@ import com.benbr.profile.types.EnumerationType
 
 class Util {
 
+    private static int bytesRead = 0;
+
+    static int read(DataInputStream input) {
+        int data =  input.read()
+        bytesRead += 1;
+        return data
+    }
+
     static int[] readUnsignedValues(DataInputStream input, int bytesToRead) {
         int[] unsignedValues = new int[bytesToRead]
 
@@ -13,8 +21,18 @@ class Util {
             unsignedValues[idx] = input.readUnsignedByte()
         }
 
+        bytesRead += unsignedValues.size()
         return unsignedValues
     }
+
+    static void resetBytesRead() {
+        bytesRead = 0
+    }
+
+    static int getBytesRead() {
+        return bytesRead
+    }
+
 
     static int[] littleToBigEndian(List<Integer> input) {
         int[] out = new int[input.size()]

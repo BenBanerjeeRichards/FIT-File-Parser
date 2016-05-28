@@ -1,12 +1,13 @@
 package com.benbr.parser
 
+
 import com.benbr.Util
 import com.benbr.parser.types.FileHeader
 
 class FileHeaderParser {
 
     public FileHeader parseHeader(DataInputStream byteStream) {
-        int headerSize = byteStream.read()
+        int headerSize = Util.read(byteStream)
         int[] bytes = Util.readUnsignedValues(byteStream, headerSize - 1)
 
         int protocolVersion = bytes[0]
