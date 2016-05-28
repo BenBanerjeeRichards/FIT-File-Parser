@@ -30,15 +30,19 @@ class DefinitionMessageParser {
         List<FieldDefinition> fields = [];
         List<FieldDefinition> devFields = [];
 
-        (1..numFields).each {
-            fields << parseField(inputStream)
+        if (numFields != 0) {
+            (1..numFields).each {
+                fields << parseField(inputStream)
+            }
         }
 
         if (header.getReserved() == 1) {
             int numDevFields = inputStream.read()
 
-            (1..numDevFields).each {
-                devFields << parseField(inputStream)
+            if(numDevFields != 0) {
+                (1..numDevFields).each {
+                    devFields << parseField(inputStream)
+                }
             }
         } else {
             devFields = null
