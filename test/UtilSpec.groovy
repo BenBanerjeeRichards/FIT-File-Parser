@@ -41,5 +41,15 @@ class UtilSpec extends Specification {
         "supported_exd_screen_layouts"  |               4
     }
 
+    def "Test that readBits works"() {
+        when:
+        def num_1 = [0b11001010, 0b01000000]
+        def num_2 = [0b11001010, 0b01000000, 0b01110101, 0b11100010]
+
+        then:
+        Util.readBits(num_1, 0, 3) == 0b110
+        Util.readBits(num_1, 3, 7) == 0b0101001
+        Util.readBits(num_2, 19, 9) == 0b101011110
+    }
 
 }

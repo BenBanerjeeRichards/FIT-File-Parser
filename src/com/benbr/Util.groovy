@@ -75,4 +75,35 @@ class Util {
         return 0;
     }
 
+    static Integer getBit(List<Integer> bytes, int bitIndex) {
+        int byteIdx = bitIndex / 8
+        int bitIdx = bitIndex - byteIdx * 8
+
+        def val = bytes[byteIdx]
+        if (val == null) {
+            return null
+        }
+        return (val >> (7-bitIdx)) & 1
+    }
+
+    static Long readBits(List<Integer> bytes, int offset, int numBits) {
+        if (numBits > 32) {
+            return null
+        }
+
+        long value = 0
+
+        for (int i = 0; i < numBits; i++) {
+            int bit = getBit(bytes, offset + i)
+
+            if (bit == 1) {
+                value |= 1 << (numBits - i - 1)
+            } else {
+                value &= ~(1 << (numBits - i - 1))
+            }
+        }
+
+        return value
+    }
+
 }
