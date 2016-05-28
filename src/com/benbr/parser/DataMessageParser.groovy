@@ -31,6 +31,13 @@ class DataMessageParser {
             def globalField = localDefinition.getGlobalFields()[idx]
             int[] unsignedBytes = Util.readUnsignedValues(inputStream, fieldDefinition.getSize())
             List<Integer> bytes = resolveEndiness(unsignedBytes.toList(), localDefinition)
+
+            if (globalField?.isArray()) {
+                message.fields[globalField.getName()] = getComponents(bytes, globalField)
+            } else {
+                String fieldName = (globalField == null) ? generateUniqueUnknownKey(message) : globalField.getName()
+                message.fields[fieldName] = getFieldValue(bytes.toList(), localDefinition, fieldDefinition, globalField)
+            }
         }
 
         resolveDynamicFields(message, localDefinition)
@@ -38,8 +45,23 @@ class DataMessageParser {
         return message;
     }
 
+    private Map getComponents(List<Integer> bytes, ProfileField globalField) {
+        def components = [:]
+        int currentBitPosition = 0
+
+        globalField.getComponents().reverse().eachWithIndex{ component, index ->
+            int bits = globalField.getComponentBits()[index]
+            long value = Util.readBits(bytes, currentBitPosition, bits)
+            currentBitPosition += bits
+
+            components[component] = TypeEncoder.applyScaleAndOffset(value, globalField, globalField.getComponents().size() - index - 1)
         }
 
+        return components
+
+    }
+
+    private Object getFieldValue(List<Integer> valueBytes, DefinitionMessage definitionMessage, FieldDefinition fieldDefinition, ProfileField globalDefinition) {
         Object value = TypeEncoder.encode(valueBytes.toList(), fieldDefinition.getType())
 
         if (globalDefinition?.getType() != "string") {
