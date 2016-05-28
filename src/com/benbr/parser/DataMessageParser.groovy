@@ -29,10 +29,8 @@ class DataMessageParser {
 
         localDefinition.getFieldDefinitions().eachWithIndex { fieldDefinition, idx ->
             def globalField = localDefinition.getGlobalFields()[idx]
-            int[] bytes = Util.readUnsignedValues(inputStream, fieldDefinition.getSize())
-
-            String fieldName = (globalField == null) ? generateUniqueUnknownKey(message) : globalField.getName()
-            message.fields[fieldName] = getFieldValue(bytes.toList(), localDefinition, fieldDefinition, globalField)
+            int[] unsignedBytes = Util.readUnsignedValues(inputStream, fieldDefinition.getSize())
+            List<Integer> bytes = resolveEndiness(unsignedBytes.toList(), localDefinition)
         }
 
         resolveDynamicFields(message, localDefinition)
@@ -40,9 +38,6 @@ class DataMessageParser {
         return message;
     }
 
-    private Object getFieldValue(List<Integer> valueBytes, DefinitionMessage definitionMessage, FieldDefinition fieldDefinition, ProfileField globalDefinition) {
-        if (definitionMessage.getArchitectureType() == ArchitectureType.LITTLE_ENDIAN) {
-            valueBytes = Util.littleToBigEndian(valueBytes.toList())
         }
 
         Object value = TypeEncoder.encode(valueBytes.toList(), fieldDefinition.getType())
@@ -52,7 +47,14 @@ class DataMessageParser {
         }
 
         return value
+    }
 
+    private List<Integer> resolveEndiness(List<Integer> valueBytes, DefinitionMessage definitionMessage) {
+        if (definitionMessage.getArchitectureType() == ArchitectureType.LITTLE_ENDIAN) {
+            valueBytes = Util.littleToBigEndian(valueBytes.toList())
+        }
+
+        return valueBytes
     }
 
     /**
