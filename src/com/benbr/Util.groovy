@@ -25,13 +25,6 @@ class Util {
         return out
     }
 
-    static long combine4ByteBigEndian(int[] input) {
-        if (input.size() != 4) return 0;
-        return input[0] << 24L | input[1] << 16L | input[2] << 8L | input[3]
-
-    }
-
-
     static int typeNameToNumBytes(HashMap<String, EnumerationType> profile, String typeName) {
         // Is it a base type
         boolean isBaseType = Constants.baseTypes.find {it.value == typeName} != null
