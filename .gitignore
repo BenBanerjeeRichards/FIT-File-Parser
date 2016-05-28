@@ -4,6 +4,8 @@
 *.xlsx
 *.bak
 *.fit
+*.exe
+commit*
 out
 scripts
 lib
