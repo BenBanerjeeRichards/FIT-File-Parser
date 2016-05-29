@@ -24,10 +24,10 @@ class FitParser {
         DataInputStream fitStream = new DataInputStream(new DataInputStream(new FileInputStream(fitFile)))
         def locals = new HashMap<Integer, DefinitionMessage>()
         def fileHeader = new FileHeaderParser().parseHeader(fitStream)
+        Map<String, Object> accumulatedFields = new HashMap<>()
 
         while (fitStream.available() > 0) {
             if (Util.getBytesRead() - fileHeader.getSize() >= fileHeader.getDataSize()) {
-                // Complete
                 return
             }
 
@@ -39,7 +39,7 @@ class FitParser {
                 locals.put(header.getLocalMessageType(), message)
                 DefinitionMessageParser.associateFieldDefinitionWithGlobalProfile(profile, message, message.getGlobalMessageNumber())
             } else {
-                DataMessage message = new DataMessageParser(profile, types).parse(fitStream, header, locals)
+                DataMessage message = new DataMessageParser(profile, types).parse(fitStream, header, locals, accumulatedFields)
                 messageQueue.add(message)
             }
         }

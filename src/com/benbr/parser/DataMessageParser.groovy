@@ -19,11 +19,10 @@ class DataMessageParser {
         this.types = types
     }
 
-    public DataMessage parse(DataInputStream inputStream, MessageHeader header, HashMap<Integer, DefinitionMessage> localDefinitions) {
+    public DataMessage parse(DataInputStream inputStream, MessageHeader header, HashMap<Integer, DefinitionMessage> localDefinitions, HashMap<String, Object> accumulatedFields) {
         def localDefinition = localDefinitions[header.getLocalMessageType()]
         if (!localDefinition) {
             throw new FITDecodeException("Data message type ${header.getLocalMessageType()} not defined in local scope")
-
         }
         DataMessage message = new DataMessage()
 
@@ -33,7 +32,7 @@ class DataMessageParser {
             List<Integer> bytes = resolveEndiness(unsignedBytes.toList(), localDefinition)
 
             if (globalField?.isArray()) {
-                message.fields[globalField.getName()] = getComponents(bytes, globalField)
+                message.fields[globalField.getName()] = getComponents(bytes, globalField, accumulatedFields)
             } else {
                 String fieldName = (globalField == null) ? generateUniqueUnknownKey(message) : globalField.getName()
                 message.fields[fieldName] = getFieldValue(bytes.toList(), localDefinition, fieldDefinition, globalField)
@@ -45,20 +44,47 @@ class DataMessageParser {
         return message;
     }
 
-    private Map getComponents(List<Integer> bytes, ProfileField globalField) {
+    private Map getComponents(List<Integer> bytes, ProfileField globalField, Map<String, Object> accumulatedFields) {
         def components = [:]
         int currentBitPosition = 0
 
-        globalField.getComponents().reverse().eachWithIndex{ component, index ->
+        globalField.getComponents().reverse().eachWithIndex{ component, idx ->
+            int index = globalField.getComponents().size() - idx - 1
             int bits = globalField.getComponentBits()[index]
-            long value = Util.readBits(bytes, currentBitPosition, bits)
+            double value = (Double)TypeEncoder.applyScaleAndOffset(Util.readBits(bytes, currentBitPosition, bits), globalField, index)
             currentBitPosition += bits
 
-            components[component] = TypeEncoder.applyScaleAndOffset(value, globalField, globalField.getComponents().size() - index - 1)
+            if (globalField.getAccumulate()[index]) {
+                components[component] = getAccumulatedFieldValue(value, accumulatedFields, globalField, component, bits, index)
+            } else {
+                components[component] = value
+            }
         }
 
         return components
 
+    }
+
+    private double getAccumulatedFieldValue(double value, Map<String, Object> accumulatedFields, ProfileField globalField, String component, int bits, int globalFieldIndex) {
+        Double[] prev = accumulatedFields?.get(globalField.getName())?.get(component)
+        double fieldValue = 0
+
+        if (prev != null) {
+            double difference = value - prev[0]
+            if (difference >= 0) {
+                fieldValue = prev[1] + difference
+            } else if (difference < 0) {
+                double rolloverIncrement = (Double)TypeEncoder.applyScaleAndOffset(Math.pow(2, bits), globalField, globalFieldIndex)
+                int rolloverMultiplier = 1 + (prev[1] / rolloverIncrement)
+                fieldValue = value + rolloverIncrement * rolloverMultiplier
+            }
+        }
+
+        if (accumulatedFields[globalField.getName()] == null) {
+            accumulatedFields[globalField.getName()] = new HashMap()
+        }
+        accumulatedFields[globalField.getName()][component] = [value, (fieldValue == null) ? 0 : fieldValue]
+        return fieldValue
     }
 
     private Object getFieldValue(List<Integer> valueBytes, DefinitionMessage definitionMessage, FieldDefinition fieldDefinition, ProfileField globalDefinition) {
@@ -85,6 +111,7 @@ class DataMessageParser {
       * @param message
      */
     private static String generateUniqueUnknownKey(DataMessage message) {
+        // TODO store the largest value of N instead of recalculating it every time.
         List postfixes = []
 
         message.fields.each {name, value ->
