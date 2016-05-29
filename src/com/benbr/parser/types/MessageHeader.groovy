@@ -28,12 +28,17 @@ class MessageHeader {
     private MessageHeaderType headerType;
     private int localMessageType;
     private int timestampOffset;
+    private int reserved;
+    private int messageSpecific;
+
+    boolean isCompressedTimestamp() {
+        return headerType == MessageHeaderType.COMPRESSED_TIMESTAMP
+    }
+
 
     int getTimestampOffset() {
         return timestampOffset
     }
-    private int reserved;
-    private int messageSpecific;
 
     MessageType getMessageType() {
         return messageType
