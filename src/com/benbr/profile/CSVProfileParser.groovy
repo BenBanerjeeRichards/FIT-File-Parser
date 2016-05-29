@@ -86,10 +86,20 @@ class CSVProfileParser{
         double offset = parseDouble(record.get(7))
         def units = record.get(8)
         def bits = stringListToIntList(parseList(record.get(9)))
+        def accumulate = stringToBooleanList(parseList(record.get(10)))
         def refFieldName = parseList(record.get(11))
         def refFieldValue = parseList(record.get(12))
 
-        return new ProfileField(definitionNum, name, type, arraySize != null, arrayType, arraySize, scale, units, offset, refFieldName, refFieldValue, components, bits)
+        return new ProfileField(definitionNum, name, type, arraySize != null, arrayType, arraySize, scale, units, offset, refFieldName, refFieldValue, components, bits, accumulate)
+    }
+
+    static List<Boolean> stringToBooleanList(List<String> list) {
+        List<Boolean> boolList = new ArrayList<>()
+        list.each {
+            boolList << (it.trim() == "1") ? true : false;
+        }
+
+        return boolList
     }
 
     static Integer parseDefinitionNumber(String input) {

@@ -21,10 +21,10 @@ class ProfileField {
     private List<String> referenceFieldValue
     private List<String> components
     private List<Integer> componentBits
+    private List<Boolean> accumulate;
     private List<ProfileField> subFields;
 
 
-    // There must be a better way to do immutability.
     ProfileField(Integer definitionNumber, String name, String type) {
         this.definitionNumber = definitionNumber
         this.name = name
@@ -36,7 +36,8 @@ class ProfileField {
         this.subFields = []
     }
 
-    ProfileField(Integer definitionNumber, String name, String type, Boolean isArray, ArrayType arrayType, Integer size, List<Double> scale, String unit, Double offset, List<String> referenceFieldName, List<String> referenceFieldValue, List<String> components, List<Integer> componentBits) {
+    // There must be a better way to do immutability.
+    ProfileField(Integer definitionNumber, String name, String type, Boolean isArray, ArrayType arrayType, Integer size, List<Double> scale, String unit, Double offset, List<String> referenceFieldName, List<String> referenceFieldValue, List<String> components, List<Integer> componentBits, List<Boolean> accumulate) {
         this.definitionNumber = definitionNumber
         this.name = name
         this.type = type
@@ -51,6 +52,8 @@ class ProfileField {
         this.components = components
         this.componentBits = componentBits
         this.subFields = []
+        this.accumulate = accumulate
+
     }
 
     boolean isDynamicField() {
@@ -86,10 +89,6 @@ class ProfileField {
         return offset
     }
 
-    int getAccumulate() {
-        return accumulate
-    }
-
     List<String> getReferenceFieldName() {
         return referenceFieldNames
     }
@@ -122,6 +121,9 @@ class ProfileField {
         this.subFields << field
     }
 
+    List<Boolean> getAccumulate() {
+        return accumulate
+    }
 
     @Override
     public String toString() {
