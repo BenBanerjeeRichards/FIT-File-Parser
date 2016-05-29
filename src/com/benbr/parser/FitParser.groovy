@@ -2,6 +2,7 @@ package com.benbr.parser
 
 import com.benbr.Util
 import com.benbr.parser.types.DefinitionMessage
+import com.benbr.parser.types.MessageHeaderType
 import com.benbr.parser.types.MessageType
 import com.benbr.profile.CSVProfileParser
 import com.benbr.profile.CSVTypeParser
@@ -25,6 +26,7 @@ class FitParser {
         def locals = new HashMap<Integer, DefinitionMessage>()
         def fileHeader = new FileHeaderParser().parseHeader(fitStream)
         Map<String, Object> accumulatedFields = new HashMap<>()
+        long timestampReference = 0;
 
         while (fitStream.available() > 0) {
             if (Util.getBytesRead() - fileHeader.getSize() >= fileHeader.getDataSize()) {
@@ -39,7 +41,12 @@ class FitParser {
                 locals.put(header.getLocalMessageType(), message)
                 DefinitionMessageParser.associateFieldDefinitionWithGlobalProfile(profile, message, message.getGlobalMessageNumber())
             } else {
-                DataMessage message = new DataMessageParser(profile, types).parse(fitStream, header, locals, accumulatedFields)
+                DataMessage message = new DataMessageParser(profile, types).parse(fitStream, header, locals, accumulatedFields, timestampReference)
+
+                if (!header.isCompressedTimestamp() && message.fields["timestamp"] != null) {
+                    timestampReference = message.timestamp
+                }
+
                 messageQueue.add(message)
             }
         }

@@ -6,6 +6,7 @@ import com.benbr.parser.types.ArchitectureType
 import com.benbr.parser.types.DefinitionMessage
 import com.benbr.parser.types.FieldDefinition
 import com.benbr.parser.types.MessageHeader
+import com.benbr.profile.Constants
 import com.benbr.profile.types.EnumerationType
 import com.benbr.profile.types.ProfileField
 
@@ -19,7 +20,7 @@ class DataMessageParser {
         this.types = types
     }
 
-    public DataMessage parse(DataInputStream inputStream, MessageHeader header, HashMap<Integer, DefinitionMessage> localDefinitions, HashMap<String, Object> accumulatedFields) {
+    public DataMessage parse(DataInputStream inputStream, MessageHeader header, HashMap<Integer, DefinitionMessage> localDefinitions, HashMap<String, Object> accumulatedFields, long referenceTimestamp) {
         def localDefinition = localDefinitions[header.getLocalMessageType()]
         if (!localDefinition) {
             throw new FITDecodeException("Data message type ${header.getLocalMessageType()} not defined in local scope")
@@ -39,9 +40,20 @@ class DataMessageParser {
             }
         }
 
+        if (header.isCompressedTimestamp()) {
+            message.fields["timestamp"] = decompressTimestamp(header.getTimestampOffset(), referenceTimestamp)
+        }
+
         resolveDynamicFields(message, localDefinition)
 
         return message;
+    }
+
+    private long decompressTimestamp(long timestampOffset, long previousTimestamp) {
+        if (timestampOffset >= (previousTimestamp & 0x0000001F)) {
+            return (previousTimestamp & 0xFFFFFFE0) + timestampOffset
+        }
+        return (previousTimestamp & 0xFFFFFFE0) + timestampOffset + 0x20
     }
 
     private Map getComponents(List<Integer> bytes, ProfileField globalField, Map<String, Object> accumulatedFields) {
