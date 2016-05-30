@@ -1,12 +1,21 @@
 # FIT File Parser
 
- A groovy library for parsing FIT files (Work in Progress)
+ A groovy library for handling FIT files (Work in Progress)
+
+## Features
+- [x] Parse FIT files
+- [x] Link to global profile, including resolution of dynamic fields
+- [ ] Type conversion and special value handling (including timestamps)
+- [ ] Data exports - text, XML, json, CSV
+- [ ] Process records - find abnormal data
+- [ ] Writing data to FIT files
 
 ## Introduction
 
 FIT is a binary file format used by various fitness devices to store a range of information, including activity, settings and user goals. 
 
 The most interesting type of FIT file is an activity file. As the name suggests, these store information about a fitness activity, for example a cycle ride or a walk. This includes sensor readings such as speed, distance, and cadence as well as other important pieces of information such the time, device type and average values for the entire activity.
+
 
 ## Messages
 
@@ -19,7 +28,7 @@ The FIT file contains a series of messages. Each message contains several fields
          type : 4 (activity file)
          garmin_product : 1561 (Edge 510)
 
-This message has 5 fields - serial number, time created, manufacturer, type and the product identifier. In the entire file there is only on `file_id` messages - the bulk of the file is made up of `record` messages, and example of which is shown below (note that I have redacted the longitude and latitude, but these contain integers that identify my position at the given timestamp).
+This message has 5 fields - serial number, time created, manufacturer, type and the product identifier. In the entire file there is only one `file_id` message - the bulk of the file is made up of `record` messages, an example of which is shown below (note that the longitude and latitude values have been redacted).
 
     record
          timestamp : 831901303 s
@@ -31,7 +40,7 @@ This message has 5 fields - serial number, time created, manufacturer, type and 
          cadence : 70 rpm
          temperature : 14 C
 
-Note that the values are mostly in [_Système International (SI)_](https://en.wikipedia.org/wiki/International_System_of_Units) units. A unit conversion system is currently in development. It will allow the API consumer to build conversion profiles which can then be applied to the fields.
+Note that the values are mostly using [_Système International (SI)_](https://en.wikipedia.org/wiki/International_System_of_Units) units. A unit conversion system is currently in development. It will allow the API consumer to build conversion profiles which can then be applied to the fields.
 
 ## Usage
 **IMPORTANT: This project is a work in progress. As a result, the API shown below is not stable and very liable to change**
