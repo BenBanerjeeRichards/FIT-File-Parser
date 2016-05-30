@@ -65,6 +65,7 @@ class Util {
     }
 
     static int baseTypenameToNumBytes(String typeName) {
+        if (typeName == null) return -2
         if (typeName.contains("64")) return 8;
         if (typeName.contains("32")) return 4;
         if (typeName.contains("16")) return 2;
@@ -73,6 +74,11 @@ class Util {
         if (typeName.contains("byte")) return 1;
         if (typeName.contains("string")) return -1;         // See definition message
         return 0;
+    }
+
+        static boolean typeIsNumber(String typename) {
+        int size = baseTypenameToNumBytes(typename)
+        return (size > 0) && typename != "enum" && typename != "byte"
     }
 
     static Integer getBit(List<Integer> bytes, int bitIndex) {
