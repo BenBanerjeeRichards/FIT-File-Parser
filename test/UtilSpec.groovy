@@ -1,5 +1,4 @@
 import com.benbr.Util
-import com.benbr.profile.CSVProfileParser
 import com.benbr.profile.CSVTypeParser
 import spock.lang.Specification
 

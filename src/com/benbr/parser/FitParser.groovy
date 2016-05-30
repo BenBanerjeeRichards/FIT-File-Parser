@@ -2,7 +2,6 @@ package com.benbr.parser
 
 import com.benbr.Util
 import com.benbr.parser.types.DefinitionMessage
-import com.benbr.parser.types.MessageHeaderType
 import com.benbr.parser.types.MessageType
 import com.benbr.profile.CSVProfileParser
 import com.benbr.profile.CSVTypeParser
