@@ -34,4 +34,29 @@ class MessageConverter {
         return (unitTo == null) ? currentUnit : unitTo;
     }
 
+    public DataMessage convertMessage(DataMessage message) {
+        DataMessage converted = new DataMessage();
+
+        message.fields.each{field->
+            String fieldUnit = message.unitSymbols[(String)field.getKey()]
+            Double convertedValue = null
+
+            // TODO think of something other than instanceof. Using localfield.getType type does not always seem to work
+            if (field.getValue() instanceof Number) {
+                convertedValue = convertField((String)field.getKey(), fieldUnit, (double)field.getValue())
+            }
+            if (convertedValue != null) {
+                String unit = Constants.unitToSymbol.getForwards(fieldUnitPostConversion((String)field.getKey(), fieldUnit))
+                converted.fields[(String)field.getKey()] = convertedValue
+                converted.unitSymbols[(String)field.getKey()] = unit
+            } else {
+                converted.fields[(String)field.getKey()] = field.getValue()
+                converted.unitSymbols[(String)field.getKey()] = fieldUnit
+            }
+        }
+
+        return converted;
+    }
+
 }
+
