@@ -6,7 +6,7 @@ import com.thoughtworks.qdox.parser.structs.FieldDef
 
 class DataMessage {
     String type;
-    def fields
+    HashMap<String, Object> fields
     HashMap<String, String> unitSymbols;
 
     DataMessage() {
