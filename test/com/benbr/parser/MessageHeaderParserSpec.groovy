@@ -31,8 +31,10 @@ class MessageHeaderParserSpec extends Specification {
         messageHeader.timestampOffset == timestamp
 
         where:
-        header  | localMessageType |  messageType           | headerType                                | timestamp
-        0xEB    |   3              |  MessageType.DATA      | MessageHeaderType.COMPRESSED_TIMESTAMP    | 11
+        header       | localMessageType |  messageType           | headerType                                | timestamp
+        0xEB         |   3              |  MessageType.DATA      | MessageHeaderType.COMPRESSED_TIMESTAMP    | 11
+        0b11011001   |   0b10          |  MessageType.DATA     | MessageHeaderType.COMPRESSED_TIMESTAMP    | 0b11001
+
     }
 
 

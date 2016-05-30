@@ -11,7 +11,7 @@ class MessageHeaderParser {
     private int messageSpecificMask = 0x20
     private int reservedMask = 0x10
     private int localMessageTypeMask = 0x000F
-    private int compressedTimestampMask = 0x0F;
+    private int compressedTimestampMask = 0x1F;
 
     public MessageHeader parse(int header) {
         MessageHeaderType headerType = ((header & headerTypeMask) == headerTypeMask) ? MessageHeaderType.COMPRESSED_TIMESTAMP : MessageHeaderType.NORMAL
