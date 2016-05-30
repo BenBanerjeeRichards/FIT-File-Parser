@@ -110,6 +110,7 @@ class Constants {
     public static BiMap unitToSymbol;
 
     public static void populateUnitToSymbol() {
+        unitToSymbol = new BiMap()
         unitToSymbol.put(Unit.METRE, "m")
         unitToSymbol.put(Unit.SEMICIRCLE, "semicircles")
         unitToSymbol.put(Unit.REV_PER_MIN, "rpm")
