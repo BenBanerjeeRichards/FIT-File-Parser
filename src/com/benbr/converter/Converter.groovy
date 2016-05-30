@@ -1,5 +1,7 @@
 package com.benbr.converter
 
+import com.benbr.parser.DataMessage
+
 final class Converter {
 
     private static HashMap<String, Double[]> conversions = new HashMap<>();
