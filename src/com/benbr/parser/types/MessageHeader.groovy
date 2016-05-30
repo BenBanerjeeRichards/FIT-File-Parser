@@ -64,7 +64,7 @@ class MessageHeader {
     @Override
     public String toString() {
         return "MessageHeader{" +
-                "messageType=" + messageType +
+                "type=" + messageType +
                 ", headerType=" + headerType +
                 ", localMessageType=" + localMessageType +
                 '}';

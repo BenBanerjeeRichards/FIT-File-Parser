@@ -26,18 +26,23 @@ class DataMessageParser {
             throw new FITDecodeException("Data message type ${header.getLocalMessageType()} not defined in local scope")
         }
         DataMessage message = new DataMessage()
+        message.type = Constants.messageIdToName[localDefinition.getGlobalMessageNumber()]
+        message.fieldDefinitions = new HashMap<>();
 
         localDefinition.getFieldDefinitions().eachWithIndex { fieldDefinition, idx ->
             def globalField = localDefinition.getGlobalFields()[idx]
             int[] unsignedBytes = Util.readUnsignedValues(inputStream, fieldDefinition.getSize())
             List<Integer> bytes = resolveEndiness(unsignedBytes.toList(), localDefinition)
 
+            def fieldName = globalField?.getName()
             if (globalField?.isArray()) {
-                message.fields[globalField.getName()] = getComponents(bytes, globalField, accumulatedFields)
+                message.fields[fieldName] = getComponents(bytes, globalField, accumulatedFields)
             } else {
-                String fieldName = (globalField == null) ? generateUniqueUnknownKey(message) : globalField.getName()
+                fieldName = (fieldName == null) ? generateUniqueUnknownKey(message) : globalField.getName()
                 message.fields[fieldName] = getFieldValue(bytes.toList(), localDefinition, fieldDefinition, globalField)
             }
+
+            message.fieldDefinitions[fieldName] = globalField
         }
 
         if (header.isCompressedTimestamp()) {
