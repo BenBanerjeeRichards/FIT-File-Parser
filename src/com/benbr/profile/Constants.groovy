@@ -1,5 +1,8 @@
 package com.benbr.profile
 
+import com.benbr.BiMap
+import com.benbr.converter.Unit
+
 class Constants {
 
 
@@ -87,22 +90,25 @@ class Constants {
 
     // TODO sort this mapping out.
     // s => signed, u => unsigned, z => ?
-    public static final HashMap baseTypes = [
-            0   : "enum",
-            1   : "sint8",
-            2   : "uint8",
-            131 : "sint16",
-            132 : "uint16",
-            133 : "sint32",
-            134 : "uint32",
-            7   : "string",
-            136 : "float32",
-            137 : "float64",
-            10  : "uint8z",
-            139 : "uint16z",
-            140 : "uint32z",
-            13  : "byte",
+    public static final HashMap<Integer, String> baseTypes = [
+            (0)   : "enum",
+            (1)   : "sint8",
+            (2)   : "uint8",
+            (131) : "sint16",
+            (132) : "uint16",
+            (133) : "sint32",
+            (134) : "uint32",
+            (7)   : "string",
+            (136) : "float32",
+            (137) : "float64",
+            (10)  : "uint8z",
+            (139) : "uint16z",
+            (140) : "uint32z",
+            (13)  : "byte",
     ]
+
+    public static BiMap unitToSymbol;
+
 
 
 }
