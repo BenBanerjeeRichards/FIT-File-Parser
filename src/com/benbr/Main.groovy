@@ -13,24 +13,8 @@ import com.benbr.profile.types.ProfileField
 class Main {
 
     public static void main(String[] args) {
-
-        Converter.addConversion(new Conversion().from(Unit.CELSIUS).to(Unit.FAHRENHEIT).constants(1.8, 32))
-        Converter.addConversion(new Conversion().from(Unit.METRE).to(Unit.MILE).constants(0.00062137, 0))
-        Converter.addConversion(new Conversion().from(Unit.KILOMETRE).to(Unit.METRE).constants(1000, 0))
-        Converter.addConversion(new Conversion().from(Unit.METRE).to(Unit.FEET).constants(3.28084, 0))
-        Converter.addConversion(new Conversion().from(Unit.SEMICIRCLE).to(Unit.DEGREE).constants((180d) / (double)(Math.pow(2, 31)), 0))
-
-        Map<Unit, String> m = new BiMap()
-        m.put(Unit.METRE, "m")
-        m.put(Unit.SEMICIRCLE, "semicircles")
-        m.put(Unit.REV_PER_MIN, "rpm")
-        m.put(Unit.CELSIUS, "C")
-        m.put(Unit.FAHRENHEIT, "C")
-        m.put(Unit.MILE, "miles")
-        m.put(Unit.DEGREE, "deg")
-        m.put(Unit.KILOMETRE, "km")
-        m.put(Unit.FEET, "feet")
-        Constants.unitToSymbol = m
+        Constants.populateUnitToSymbol()
+        Converter.loadConversions()
 
         HashMap<Unit, Unit> conversionPolicy = [
                 (Unit.SEMICIRCLE) : Unit.DEGREE,
@@ -45,6 +29,7 @@ class Main {
 
         new FitParser().parse(new File("fit/fit.fit")).each { message ->
             println message.getType()
+
             message.fields.each{field->
                 String fieldUnit = message.unitSymbols[(String)field.getKey()]
                 Double convertedValue = null

@@ -8,6 +8,14 @@ final class Converter {
 
     private Converter() {}
 
+    static void loadConversions() {
+        addConversion(new Conversion().from(Unit.CELSIUS).to(Unit.FAHRENHEIT).constants(1.8, 32))
+        addConversion(new Conversion().from(Unit.METRE).to(Unit.MILE).constants(0.00062137, 0))
+        addConversion(new Conversion().from(Unit.KILOMETRE).to(Unit.METRE).constants(1000, 0))
+        addConversion(new Conversion().from(Unit.METRE).to(Unit.FEET).constants(3.28084, 0))
+        addConversion(new Conversion().from(Unit.SEMICIRCLE).to(Unit.DEGREE).constants((180d) / (double)(Math.pow(2, 31)), 0))
+    }
+
     static void addConversion(Conversion conversion) {
         addToMap(conversion.getUnitFrom(), conversion.getUnitTo(), conversion.getConstantMultipleBy(), conversion.getConstantAddTo())
 

@@ -109,6 +109,16 @@ class Constants {
 
     public static BiMap unitToSymbol;
 
-
+    public static void populateUnitToSymbol() {
+        unitToSymbol.put(Unit.METRE, "m")
+        unitToSymbol.put(Unit.SEMICIRCLE, "semicircles")
+        unitToSymbol.put(Unit.REV_PER_MIN, "rpm")
+        unitToSymbol.put(Unit.CELSIUS, "C")
+        unitToSymbol.put(Unit.FAHRENHEIT, "C")
+        unitToSymbol.put(Unit.MILE, "miles")
+        unitToSymbol.put(Unit.DEGREE, "deg")
+        unitToSymbol.put(Unit.KILOMETRE, "km")
+        unitToSymbol.put(Unit.FEET, "feet")
+    }
 
 }
