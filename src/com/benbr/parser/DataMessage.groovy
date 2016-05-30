@@ -6,9 +6,13 @@ import com.thoughtworks.qdox.parser.structs.FieldDef
 
 class DataMessage {
     String type;
+    def fields
+    HashMap<String, String> unitSymbols;
 
-    def fields = [:]
-    HashMap<String, Tuple> fieldDefinitions;
+    DataMessage() {
+        fields = [:]
+        unitSymbols = [:]
+    }
 
     def propertyMissing(String name, String value) {
         fields[name] = value

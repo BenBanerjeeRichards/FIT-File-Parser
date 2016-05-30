@@ -46,18 +46,17 @@ class Main {
         new FitParser().parse(new File("fit/fit.fit")).each { message ->
             println message.getType()
             message.fields.each{field->
-                ProfileField globalProfile = (ProfileField)message.fieldDefinitions[(String)field.getKey()]?.get(1)
+                String fieldUnit = message.unitSymbols[(String)field.getKey()]
                 Double convertedValue = null
 
                 // TODO think of something other than instanceof. Using localfield.getType type does not always seem to work
-
                 if (field.getValue() instanceof Number) {
-                    convertedValue = converter.convertField(globalProfile, (String)field.getKey(), (double)field.getValue())
+                    convertedValue = converter.convertField(fieldUnit, (String)field.getKey(), (double)field.getValue())
                 }
                 if (convertedValue != null) {
-                    println "\t ${field.getKey()} : ${convertedValue} ${Constants.unitToSymbol.getForwards(converter.fieldUnitPostConversion((String)field.getKey(), globalProfile.getUnit()))}"
+                    println "\t ${field.getKey()} : ${convertedValue} ${Constants.unitToSymbol.getForwards(converter.fieldUnitPostConversion((String)field.getKey(), fieldUnit))}"
                 } else {
-                    println "\t ${field.getKey()} : ${field.getValue()} ${globalProfile?.getUnit()}"
+                    println "\t ${field.getKey()} : ${field.getValue()} ${fieldUnit}"
                 }
             }
 

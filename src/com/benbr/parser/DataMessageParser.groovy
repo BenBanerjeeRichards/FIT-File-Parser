@@ -27,8 +27,6 @@ class DataMessageParser {
         }
         DataMessage message = new DataMessage()
         message.type = Constants.messageIdToName[localDefinition.getGlobalMessageNumber()]
-        message.fieldDefinitions = new HashMap<>();
-
         localDefinition.getFieldDefinitions().eachWithIndex { fieldDefinition, idx ->
             def globalField = localDefinition.getGlobalFields()[idx]
             int[] unsignedBytes = Util.readUnsignedValues(inputStream, fieldDefinition.getSize())
@@ -42,7 +40,7 @@ class DataMessageParser {
                 message.fields[fieldName] = getFieldValue(bytes.toList(), localDefinition, fieldDefinition, globalField)
             }
 
-            message.fieldDefinitions[fieldName] = new Tuple(fieldDefinition, globalField)
+            message.unitSymbols[fieldName] = globalField?.getUnit()
         }
 
         if (header.isCompressedTimestamp()) {

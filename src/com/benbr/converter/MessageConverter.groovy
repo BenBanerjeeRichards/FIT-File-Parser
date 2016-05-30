@@ -12,9 +12,9 @@ class MessageConverter {
         this.conversionPolicy = conversionPolicy
     }
 
-    Double convertField(ProfileField globalProfile, String name, double value) {
-        if (globalProfile == null) return null
-        Unit currentUnit = (Unit)Constants.unitToSymbol.getBackwards(globalProfile.getUnit())
+    Double convertField(String fieldUnit, String name, double value) {
+        if (fieldUnit == null) return null
+        Unit currentUnit = (Unit)Constants.unitToSymbol.getBackwards(fieldUnit)
 
         Unit unitTo;
         if (conversionPolicy.getFieldPolicy()[name] != null) {
