@@ -42,7 +42,7 @@ class DataMessageParser {
                 message.fields[fieldName] = getFieldValue(bytes.toList(), localDefinition, fieldDefinition, globalField)
             }
 
-            message.fieldDefinitions[fieldName] = globalField
+            message.fieldDefinitions[fieldName] = new Tuple(fieldDefinition, globalField)
         }
 
         if (header.isCompressedTimestamp()) {
