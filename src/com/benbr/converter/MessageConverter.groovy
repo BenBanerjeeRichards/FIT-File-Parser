@@ -12,19 +12,12 @@ class MessageConverter {
         this.conversionPolicy = conversionPolicy
     }
 
-    Double convertField(String fieldUnit, String name, double value) {
+    Double convertField(String fieldName, String fieldUnit, double value) {
         if (fieldUnit == null) return null
         Unit currentUnit = (Unit)Constants.unitToSymbol.getBackwards(fieldUnit)
 
-        Unit unitTo;
-        if (conversionPolicy.getFieldPolicy()[name] != null) {
-            unitTo = conversionPolicy.getFieldPolicy()[name]
-        } else if (conversionPolicy.getUnitPolicy()[currentUnit]){
-            unitTo = conversionPolicy.getUnitPolicy()[currentUnit]
-        } else {
-            return null
-        }
-
+        Unit unitTo = fieldUnitPostConversion(fieldName, fieldUnit);
+        if (unitTo == currentUnit) return null;
         return Converter.convert(value, currentUnit, unitTo)
     }
 

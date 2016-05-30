@@ -51,8 +51,9 @@ class Main {
 
                 // TODO think of something other than instanceof. Using localfield.getType type does not always seem to work
                 if (field.getValue() instanceof Number) {
-                    convertedValue = converter.convertField(fieldUnit, (String)field.getKey(), (double)field.getValue())
+                    convertedValue = converter.convertField((String)field.getKey(), fieldUnit, (double)field.getValue())
                 }
+
                 if (convertedValue != null) {
                     println "\t ${field.getKey()} : ${convertedValue} ${Constants.unitToSymbol.getForwards(converter.fieldUnitPostConversion((String)field.getKey(), fieldUnit))}"
                 } else {
