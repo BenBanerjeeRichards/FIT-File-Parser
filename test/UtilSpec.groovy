@@ -1,5 +1,5 @@
-import com.benbr.Util
-import com.benbr.profile.CSVTypeParser
+import main.java.com.benbr.Util
+import main.java.com.benbr.profile.CSVTypeParser
 import spock.lang.Specification
 
 class UtilSpec extends Specification {

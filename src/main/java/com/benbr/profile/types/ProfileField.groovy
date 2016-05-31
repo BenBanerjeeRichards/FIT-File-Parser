@@ -1,0 +1,150 @@
+package main.java.com.benbr.profile.types
+
+
+enum ArrayType {
+    SIZE_N, SIZE_INTEGER
+}
+class ProfileField {
+
+    private Integer definitionNumber
+    private String name
+    private String type
+
+    private Boolean isArray
+    private ArrayType arrayType
+    private Integer size       // only set when arrayType = SIZE_INTEGER
+
+    private List<Double> scale
+    private String unit
+    private Double offset
+    private List<String> referenceFieldNames
+    private List<String> referenceFieldValue
+    private List<String> components
+    private List<Integer> componentBits
+    private List<Boolean> accumulate;
+    private List<ProfileField> subFields;
+
+
+    ProfileField(Integer definitionNumber, String name, String type) {
+        this.definitionNumber = definitionNumber
+        this.name = name
+        this.type = type
+
+        isArray = false;
+        scale = [1]
+        offset = 0
+        this.subFields = []
+    }
+
+    // There must be a better way to do immutability.
+    ProfileField(Integer definitionNumber, String name, String type, Boolean isArray, ArrayType arrayType, Integer size, List<Double> scale, String unit, Double offset, List<String> referenceFieldName, List<String> referenceFieldValue, List<String> components, List<Integer> componentBits, List<Boolean> accumulate) {
+        this.definitionNumber = definitionNumber
+        this.name = name
+        this.type = type
+        this.isArray = isArray
+        this.arrayType = arrayType
+        this.size = size
+        this.scale = scale
+        this.unit = unit
+        this.offset = offset
+        this.referenceFieldNames = referenceFieldName
+        this.referenceFieldValue = referenceFieldValue
+        this.components = components
+        this.componentBits = componentBits
+        this.subFields = []
+        this.accumulate = accumulate
+
+    }
+
+    boolean isDynamicField() {
+        return subFields.size() > 0
+    }
+
+
+    List<Integer> getComponentBits() {
+        return componentBits
+    }
+
+    boolean isArray() {
+        return isArray
+    }
+
+    ArrayType getArrayType() {
+        return arrayType
+    }
+
+    int getSize() {
+        return size
+    }
+
+    List<Double> getScale() {
+        return scale
+    }
+
+    String getUnit() {
+        return unit
+    }
+
+    double getOffset() {
+        return offset
+    }
+
+    List<String> getReferenceFieldName() {
+        return referenceFieldNames
+    }
+
+    List<String> getReferenceFieldValue() {
+        return referenceFieldValue
+    }
+
+    List<String> getComponents() {
+        return components
+    }
+
+    Integer getDefinitionNumber() {
+        return definitionNumber
+    }
+
+    String getName() {
+        return name
+    }
+
+    String getType() {
+        return type
+    }
+
+    List<ProfileField> getSubFields() {
+        return subFields
+    }
+
+    void addSubField(ProfileField field) {
+        this.subFields << field
+    }
+
+    List<Boolean> getAccumulate() {
+        return accumulate
+    }
+
+    void setUnit(String unit) {
+        this.unit = unit
+    }
+
+    @Override
+    public String toString() {
+        return "ProfileField{" +
+                "definitionNumber=" + definitionNumber +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", isArray=" + isArray +
+                ", arrayType=" + arrayType +
+                ", size=" + size +
+                ", scale=" + scale +
+                ", unit='" + unit + '\'' +
+                ", offset=" + offset +
+                ", referenceFieldNames='" + referenceFieldNames + '\'' +
+                ", referenceFieldValue='" + referenceFieldValue + '\'' +
+                ", components=" + components +
+                ", componentBits=" + componentBits +
+                '}';
+    }
+}
