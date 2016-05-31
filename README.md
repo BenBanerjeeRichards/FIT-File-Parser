@@ -128,17 +128,18 @@ record
 
 The previous example demonstrated that some of the default units are not ideal, so it makes sense to process them to more useful forms. This library contains tools to transform the data, the most useful of which is _Unit Conversion_.
 
- To apply a unit conversion to the data messages, you must first define some rules to lay out exactly what you want to happen - for example, what units to convert to which. This library calls these rules a _Conversion Policy_
+To apply a unit conversion to the data messages, you must first define some rules to lay out exactly what you want to happen - for example, what units to convert to which. This library calls these rules a _Conversion Policy_
 
- There are two different types of rules in the conversion policy:
+There are two different types of rules in the conversion policy:
+ 
  1. Unit Conversion
  2. Field Conversion
+ 
+A unit conversion converts every field with one unit to a different unit. This allows you to, for example, convert all fields with the unit degrees celsius to degrees fahrenheit.
 
- A unit conversion converts every field with one unit to a different unit. This allows you to, for example, convert all fields with the unit degrees celsius to degrees fahrenheit.
+A field conversion allows you to convert every field with a specific name to another type. For example, you could convert all altitudes to feet and at the same time leave distance in metres. **The field conversion policy always has precedence over a unit conversion policy**.
 
- A field conversion allows you to convert every field with a specific name to another type. For example, you could convert all altitudes to feet and at the same time leave distance in metres. **The field conversion policy always has precedence over a unit conversion policy**.
-
- The policies are stored in HashMaps as demonstrated below.
+The policies are stored in HashMaps as demonstrated below.
 
  ```groovy
  HashMap<Unit, Unit> unitPolicy = [
