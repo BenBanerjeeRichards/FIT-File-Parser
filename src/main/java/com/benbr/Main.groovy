@@ -23,6 +23,7 @@ class Main {
                 altitude: Unit.FEET
         ]
 
+
         def converter = new MessageConverter(new ConversionPolicy(fieldPolicy, conversionPolicy))
 
         new FitParser().parse(new File("fit/fit.fit")).each { message ->

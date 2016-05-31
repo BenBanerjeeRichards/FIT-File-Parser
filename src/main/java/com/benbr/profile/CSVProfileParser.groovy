@@ -7,14 +7,14 @@ import org.apache.commons.csv.CSVRecord
 
 class CSVProfileParser{
 
-    private File file;
+    private Reader file;
 
-    CSVProfileParser(File file) {
+    CSVProfileParser(Reader file) {
         this.file = file;
     }
 
     HashMap<String, List<ProfileField>> getFields() {
-        List<CSVRecord> records = CSVFormat.EXCEL.parse(new FileReader(file)).getRecords()
+        List<CSVRecord> records = CSVFormat.EXCEL.parse(file).getRecords()
 
         HashMap<String, List<ProfileField>> fields = [:]
 

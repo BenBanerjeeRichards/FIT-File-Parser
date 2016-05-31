@@ -17,9 +17,9 @@ class FitParser {
 
     public FitParser() {
         ClassLoader loader = getClass().getClassLoader()
-        File profileFile = new File(loader.getResource("src/main/resources/profile.csv").getFile());
+        InputStreamReader profileFile = new InputStreamReader(loader.getResourceAsStream("profile.csv"));
         profile = new CSVProfileParser(profileFile).getFields()
-        types = new CSVTypeParser(new File("src/main/resources/types.csv")).parse()
+        types = new CSVTypeParser(new InputStreamReader(loader.getResourceAsStream("types.csv"))).parse()
     }
 
     private void parseFile(File fitFile, Queue<DataMessage> messageQueue) {

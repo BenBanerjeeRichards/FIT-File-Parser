@@ -5,14 +5,14 @@ import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVRecord
 
 class CSVTypeParser {
-    private File file;
+    private Reader file;
 
-    CSVTypeParser(File file) {
+    CSVTypeParser(Reader file) {
         this.file = file
     }
 
     HashMap<String, EnumerationType> parse() {
-        List<CSVRecord> records = CSVFormat.EXCEL.parse(new FileReader(file)).getRecords()
+        List<CSVRecord> records = CSVFormat.EXCEL.parse(file).getRecords()
         boolean reachedTitleRow = false;
         HashMap<String, EnumerationType> types = [:];     // The final parsed form
 
