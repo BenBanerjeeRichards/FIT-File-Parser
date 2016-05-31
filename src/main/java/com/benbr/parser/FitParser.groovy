@@ -1,7 +1,9 @@
 package main.java.com.benbr.parser
 
+import main.java.com.benbr.converter.Converter
 import main.java.com.benbr.parser.types.MessageType
 import main.java.com.benbr.profile.CSVTypeParser
+import main.java.com.benbr.profile.Constants
 import main.java.com.benbr.profile.types.ProfileField
 import main.java.com.benbr.Util
 import main.java.com.benbr.parser.types.DefinitionMessage
@@ -20,6 +22,9 @@ class FitParser {
         InputStreamReader profileFile = new InputStreamReader(loader.getResourceAsStream("profile.csv"));
         profile = new CSVProfileParser(profileFile).getFields()
         types = new CSVTypeParser(new InputStreamReader(loader.getResourceAsStream("types.csv"))).parse()
+
+        Constants.populateUnitToSymbol()
+        Converter.loadConversions()
     }
 
     private void parseFile(File fitFile, Queue<DataMessage> messageQueue) {

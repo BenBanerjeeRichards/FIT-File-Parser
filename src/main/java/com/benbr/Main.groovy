@@ -12,8 +12,6 @@ import main.java.com.benbr.profile.Constants
 class Main {
 
     public static void main(String[] args) {
-        Constants.populateUnitToSymbol()
-        Converter.loadConversions()
 
         HashMap<Unit, Unit> globalConversionPolicy = [
                 (Unit.SEMICIRCLE) : Unit.DEGREE,
