@@ -1,10 +1,11 @@
 *.iml
 .idea
-*.csv
 *.xlsx
 *.bak
 *.fit
 *.exe
+src/**/*.csv
+fit
 commit*
 out
 scripts
