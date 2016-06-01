@@ -5,5 +5,4 @@ import main.java.com.benbr.parser.types.DefinitionMessage
 
 interface FITFormatter {
     String formatDataMessage(DataMessage message);
-    String formatDefinitionMessage(DefinitionMessage message)
 }

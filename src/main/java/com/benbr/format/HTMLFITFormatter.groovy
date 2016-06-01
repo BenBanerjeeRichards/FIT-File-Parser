@@ -38,8 +38,4 @@ class HTMLFITFormatter implements FITFormatter{
 
         return writer.getBuffer().toString()
     }
-
-    String formatDefinitionMessage(DefinitionMessage message) {
-        return null
-    }
 }
