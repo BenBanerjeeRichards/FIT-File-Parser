@@ -8,6 +8,10 @@ src/**/*.csv
 fit
 commit*
 out
+*hprof*
+*.html
+*.css
+*.txt
 scripts
 lib
 src/com/benbr/profile/XLSXProfileParser.groovy
