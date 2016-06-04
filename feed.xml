@@ -4,10 +4,10 @@
     <title>Fit File Parser</title>
     <description>Fit file parser (.fit) for Garmin and many other devices.
 </description>
-    <link>benbanerjeerichards.github.io/</link>
-    <atom:link href="benbanerjeerichards.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 04 Jun 2016 21:28:25 +0100</pubDate>
-    <lastBuildDate>Sat, 04 Jun 2016 21:28:25 +0100</lastBuildDate>
+    <link>benbanerjeerichards.github.iohttp://benbanerjeerichards.github.io/FIT-File-Parser/</link>
+    <atom:link href="benbanerjeerichards.github.iohttp://benbanerjeerichards.github.io/FIT-File-Parser/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 04 Jun 2016 21:30:04 +0100</pubDate>
+    <lastBuildDate>Sat, 04 Jun 2016 21:30:04 +0100</lastBuildDate>
     <generator>Jekyll v3.1.6</generator>
     
   </channel>
