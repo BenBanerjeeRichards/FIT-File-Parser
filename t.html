@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Quickstart</title>
+  <meta name="description" content="Fit file parser (.fit) for Garmin and many other devices.
+">
+
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="canonical" href="benbanerjeerichards.github.io/quickstart">
+  <link rel="alternate" type="application/rss+xml" title="Fit File Parser" href="benbanerjeerichards.github.iofeed.xml">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">Fit File Parser</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/about">About</a>
+          
+        
+          
+        
+          
+          <a class="page-link" href="/unit-conversion">Unit Conversion</a>
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/quickstart">Quickstart</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Quickstart</h1>
+  </header>
+
+  <div class="post-content">
+    <p>This section provides some examples, demonstrating what the library is capable of.</p>
+
+<h1 id="iterating-over-the-messages-in-a-fit-file">Iterating over the messages in a FIT file</h1>
+
+<p>The following code example will</p>
+
+<ol>
+  <li>Iterate over each message in the FIT file.</li>
+  <li>Print the message type (this describes what kind of information the message contains)</li>
+  <li>Iterate over each field in the message and print out</li>
+</ol>
+
+<div class="language-groovy highlighter-rouge"><pre class="highlight"><code><span class="kt">def</span> <span class="n">parser</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FitParser</span><span class="o">()</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">DataMessage</span><span class="o">&gt;</span> <span class="n">messages</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s2">"fit/fit.fit"</span><span class="o">))</span>
+
+<span class="c1">// Iterate over each of the data messages in the FIT file</span>
+<span class="n">messages</span><span class="o">.</span><span class="na">each</span> <span class="o">{</span><span class="n">message</span> <span class="o">-&gt;</span>
+    <span class="c1">// Print the data message name (for example, 'record' or 'file_id')</span>
+    <span class="n">println</span> <span class="n">message</span><span class="o">.</span><span class="na">getType</span><span class="o">()</span>
+
+    <span class="c1">// Iterate over the fields</span>
+    <span class="n">message</span><span class="o">.</span><span class="na">fields</span><span class="o">.</span><span class="na">each</span> <span class="o">{</span> <span class="n">field</span> <span class="o">-&gt;</span>
+        <span class="c1">// Print the name and value of each field in the data message `message`</span>
+        <span class="n">println</span> <span class="s2">"\t ${field.getKey()} : ${field.getValue()}"</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<h1 id="formatting-the-data-messages">Formatting the data messages</h1>
+
+<p>The same output can be achieved by using a formatter.</p>
+
+<div class="language-groovy highlighter-rouge"><pre class="highlight"><code><span class="k">new</span> <span class="nf">FitParser</span><span class="o">().</span><span class="na">parse</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s2">"fit/fit.fit"</span><span class="o">))</span><span class="n">each</span> <span class="o">{</span><span class="n">message</span><span class="o">-&gt;</span>
+    <span class="n">println</span> <span class="k">new</span> <span class="nf">TextFITFormatter</span><span class="o">().</span><span class="na">formatDataMessage</span><span class="o">(</span><span class="n">message</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<h1 id="printing-out-the-units">Printing out the units</h1>
+
+<p>The unit symbol is printed out next to the field value.</p>
+
+<div class="language-groovy highlighter-rouge"><pre class="highlight"><code><span class="k">new</span> <span class="nf">FitParser</span><span class="o">().</span><span class="na">parse</span><span class="o">(</span><span class="s2">"fit/fit.fit"</span><span class="o">).</span><span class="na">each</span> <span class="o">{</span><span class="n">message</span> <span class="o">-&gt;</span>
+    <span class="n">message</span><span class="o">.</span><span class="na">fields</span><span class="o">.</span><span class="na">each</span> <span class="o">{</span> <span class="n">field</span> <span class="o">-&gt;</span>
+        <span class="c1">// Look up the unit symbol in the hashmap</span>
+        <span class="n">String</span> <span class="n">unitSymbol</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="na">unitSymbols</span><span class="o">[</span><span class="n">field</span><span class="o">.</span><span class="na">getKey</span><span class="o">()]</span>
+        <span class="n">println</span> <span class="s2">"\t ${field.getKey()} : ${field.getValue()} (${unitSymbol})"</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<h1 id="converting-the-units">Converting the units</h1>
+
+<p>The following code will convert the units in the following circumstances</p>
+
+<ol>
+  <li>The field has the unit ‘semicircle’ (in which case it will be convertd to degrees)</li>
+  <li>The field has the unit ‘metres’ (in which case it will be converted to miles)</li>
+  <li>The field is called ‘altitude’ (in which case it will be converted to feet, <strong>not</strong> miles)</li>
+</ol>
+
+<div class="language-groovy highlighter-rouge"><pre class="highlight"><code> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Unit</span><span class="o">,</span> <span class="n">Unit</span><span class="o">&gt;</span> <span class="n">unitPolicy</span> <span class="o">=</span> <span class="o">[</span>
+         <span class="o">(</span><span class="n">Unit</span><span class="o">.</span><span class="na">SEMICIRCLE</span><span class="o">)</span> <span class="o">:</span> <span class="n">Unit</span><span class="o">.</span><span class="na">DEGREE</span><span class="o">,</span>
+         <span class="o">(</span><span class="n">Unit</span><span class="o">.</span><span class="na">METRE</span><span class="o">)</span> <span class="o">:</span> <span class="n">Unit</span><span class="o">.</span><span class="na">MILE</span><span class="o">,</span>
+ <span class="o">]</span>
+
+ <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Unit</span><span class="o">&gt;</span> <span class="n">fieldPolicy</span> <span class="o">=</span> <span class="o">[</span>
+         <span class="nl">altitude:</span> <span class="n">Unit</span><span class="o">.</span><span class="na">FEET</span>
+ <span class="o">]</span>
+
+<span class="kt">def</span> <span class="n">converter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MessageConverter</span><span class="o">(</span><span class="k">new</span> <span class="n">ConversionPolicy</span><span class="o">(</span><span class="n">fieldPolicy</span><span class="o">,</span> <span class="n">unitPolicy</span><span class="o">))</span>
+
+<span class="k">new</span> <span class="nf">FitParser</span><span class="o">().</span><span class="na">parse</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s2">"fit/fit.fit"</span><span class="o">)).</span><span class="na">each</span> <span class="o">{</span> <span class="n">message</span> <span class="o">-&gt;</span>
+    <span class="n">println</span> <span class="n">message</span><span class="o">.</span><span class="na">getType</span><span class="o">()</span>
+    <span class="n">DataMessage</span> <span class="n">converted</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="na">convertMessage</span><span class="o">(</span><span class="n">message</span><span class="o">)</span>
+
+    <span class="n">converted</span><span class="o">.</span><span class="na">fields</span><span class="o">.</span><span class="na">each</span><span class="o">{</span> <span class="n">field</span> <span class="o">-&gt;</span>
+    	<span class="kt">def</span> <span class="n">unit</span> <span class="o">=</span> <span class="n">converted</span><span class="o">.</span><span class="na">unitSymbols</span><span class="o">[</span><span class="n">field</span><span class="o">.</span><span class="na">getKey</span><span class="o">()]</span>
+        <span class="n">println</span> <span class="s2">"\t ${field.getKey()}: ${field.getValue()} (${unit})"</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Fit File Parser</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>Fit File Parser</li>
+          <li><a href="mailto:dev@benbr.com">dev@benbr.com</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Fit file parser (.fit) for Garmin and many other devices.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
