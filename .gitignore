@@ -10,8 +10,6 @@ fit
 commit*
 out
 *hprof*
-*.html
-*.css
 *.txt
 scripts
 lib
