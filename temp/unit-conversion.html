@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Unit Conversion</title>
+  <meta name="description" content="Fit file parser (.fit) for Garmin and many other devices.
+">
+
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="canonical" href="benbanerjeerichards.github.io/unit-conversion">
+  <link rel="alternate" type="application/rss+xml" title="Fit File Parser" href="benbanerjeerichards.github.iofeed.xml">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">Fit File Parser</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/about">About</a>
+          
+        
+          
+        
+          
+          <a class="page-link" href="/unit-conversion">Unit Conversion</a>
+          
+        
+          
+        
+          
+        
+          
+          <a class="page-link" href="/quickstart">Quickstart</a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Unit Conversion</h1>
+  </header>
+
+  <div class="post-content">
+    <p>The units used by most devices are a mix between Système international, imperial and some obscure units designed for storage in memory (for example, semicircles instead of degrees). This library contains tools to transform the data, the most useful of which is <em>Unit Conversion</em>.</p>
+
+<p>To apply a unit conversion to the data messages, you must first define some rules to lay out exactly what you want to happen - for example, what units to convert to which. This library calls these rules a <em>Conversion Policy</em></p>
+
+<p>There are two different types of rules in the conversion policy:</p>
+
+<ol>
+  <li>Unit Conversion</li>
+  <li>Field Conversion</li>
+</ol>
+
+<p>A unit conversion converts every field with one unit to a different unit. This allows you to, for example, convert all fields with the unit degrees celsius to degrees fahrenheit.</p>
+
+<p>A field conversion allows you to convert every field with a specific name to another type. For example, you could convert all altitudes to feet and at the same time leave distance in metres. <strong>The field conversion policy always has precedence over a unit conversion policy</strong>.</p>
+
+<p>The policies are stored in HashMaps as demonstrated below.</p>
+
+<div class="language-groovy highlighter-rouge"><pre class="highlight"><code><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">unitPolicy</span> <span class="o">=</span> <span class="o">[</span>
+        <span class="n">semicircle</span> <span class="o">:</span> <span class="s2">"degree"</span><span class="o">,</span>
+        <span class="n">metre</span> <span class="o">:</span> <span class="s2">"mile"</span>
+<span class="o">]</span>
+
+<span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">fieldPolicy</span> <span class="o">=</span> <span class="o">[</span>
+        <span class="n">altitude</span> <span class="o">:</span> <span class="s2">"feet"</span>
+<span class="o">]</span>
+</code></pre>
+</div>
+
+<p>This creates a unit policy which will convert all semicircle units to degrees and metres to miles. It also specifies a field policy that converts fields named ‘altitude’ to feet (the converter will automatically detect the original unit of the altitude field).</p>
+
+<p>The following code demonstrates the conversion in action.</p>
+
+<div class="language-groovy highlighter-rouge"><pre class="highlight"><code><span class="kt">def</span> <span class="n">converter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MessageConverter</span><span class="o">(</span><span class="k">new</span> <span class="n">ConversionPolicy</span><span class="o">(</span><span class="n">fieldPolicy</span><span class="o">,</span> <span class="n">unitPolicy</span><span class="o">))</span>
+
+<span class="k">new</span> <span class="nf">FitParser</span><span class="o">().</span><span class="na">parse</span><span class="o">(</span><span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="s2">"fit/fit.fit"</span><span class="o">)).</span><span class="na">each</span> <span class="o">{</span> <span class="n">message</span> <span class="o">-&gt;</span>
+    <span class="n">println</span> <span class="n">message</span><span class="o">.</span><span class="na">getType</span><span class="o">()</span>
+    <span class="n">DataMessage</span> <span class="n">converted</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="na">convertMessage</span><span class="o">(</span><span class="n">message</span><span class="o">)</span>
+
+    <span class="n">converted</span><span class="o">.</span><span class="na">fields</span><span class="o">.</span><span class="na">each</span><span class="o">{</span> <span class="n">field</span> <span class="o">-&gt;</span>
+        <span class="n">println</span> <span class="s2">"\t ${field.getKey()}: ${field.getValue()} (${converted.unitSymbols[field.getKey()]})"</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<ol>
+  <li>The policies defined in the previous code listing are used to create a new <code class="highlighter-rouge">MessageConverter</code> object - the type responsible for transforming the data.</li>
+  <li>A <em>new</em> message type is created and given the name <code class="highlighter-rouge">converted</code>. It is identical to <code class="highlighter-rouge">message</code> other than the fields that have been transformed.</li>
+  <li>The fields are printed out. Note that the <code class="highlighter-rouge">unitSymbols</code> HashMap has been updated with the new units as appropriate.</li>
+</ol>
+
+<p>Note that any fields that have not been converted remain exactly the same as before. Also, the <code class="highlighter-rouge">convertMessage</code> method does not mutate the original message in any way. If you want to, you can print out both the original and transformed <code class="highlighter-rouge">DataMessgae</code> objects to compare them.</p>
+
+<p>The above code has the following output.</p>
+
+<div class="language-text highlighter-rouge"><pre class="highlight"><code>record
+	 timestamp: 831901185 (s)
+	 position_lat: &lt;REDACTED&gt; (deg)
+	 position_long: &lt;REDACTED&gt; (deg)
+	 distance: 8.1151854055 (miles)
+	 altitude: 221.7847840000001 (feet)
+	 speed: 8.007 (m/s)
+	 cadence: 89 (rpm)
+	 temperature: 15 (C)
+</code></pre>
+</div>
+
+<p>Notice that the field conversion policy had precedence over the unit conversion policy, as altitude has the unit feet instead of miles.</p>
+
+<h1 id="adding-more-conversions">Adding more conversions</h1>
+<p>The library contains some conversions by default (see the <a href="https://github.com/BenBanerjeeRichards/FIT-File-Parser/blob/master/src/main/java/com/benbr/converter/Converter.groovy"><code class="highlighter-rouge">loadConversions</code> method in converter.Converter.groovy</a>, however you may run into situations where there is no conversion available, leading to a <code class="highlighter-rouge">ConvertException</code> being thrown.</p>
+
+<p>You can add a new conversion by using the <code class="highlighter-rouge">Converter.addConversion</code> method, which takes a <code class="highlighter-rouge">Conversion</code> object. As an example, suppose that the library did not support conversion between celsius and fahrenheit (which in reality, it does) and you wanted to add the conversion yourself. To gain the temperature in fahrenheit, from celsius, the conversion is</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>fahrenheit = 1.8 * celsius + 32
+</code></pre>
+</div>
+
+<p>The conversion is linear (in two dimentions as there are two units involved), so it has two contants: the multiplication factor (the gradient of the line) and the addition factor (the interception between the line and the y axis). This conversion can be added using the following code.</p>
+
+<div class="language-groovy highlighter-rouge"><pre class="highlight"><code><span class="n">Converter</span><span class="o">.</span><span class="na">addConversion</span><span class="o">(</span><span class="k">new</span> <span class="n">Conversion</span><span class="o">().</span><span class="na">from</span><span class="o">(</span><span class="s2">"celsius"</span><span class="o">).</span><span class="na">to</span><span class="o">(</span><span class="s2">"fahrenheit"</span><span class="o">).</span><span class="na">constants</span><span class="o">(</span><span class="mf">1.8</span><span class="o">,</span> <span class="mi">32</span><span class="o">))</span>
+</code></pre>
+</div>
+
+<p>The library will add the conversion and calculate the inverse. As a result, it can now convert celsius to fahrenheit <strong>and</strong> from fahrenheit to celsius. <strong>There is no need to define the conversion in both directions</strong>.</p>
+
+<h2 id="adding-more-units">Adding more units</h2>
+
+<p>To add a new unit, you need to provide two pieces of information. Firstly, the unit name. This is a string used to identify the unit in conversion policies and when creating new conversions. Secondly, the unit symbol is needed. This is the symbol <strong>as it appears in the FIT profile</strong> (you can find this out by printing out the fields and units..</p>
+
+<div class="language-groovy highlighter-rouge"><pre class="highlight"><code><span class="n">Converter</span><span class="o">.</span><span class="na">addUnit</span><span class="o">(</span><span class="s2">"celsius"</span><span class="o">,</span> <span class="s2">"C"</span><span class="o">)</span>
+<span class="n">Converter</span><span class="o">.</span><span class="na">addUnit</span><span class="o">(</span><span class="s2">"mile"</span><span class="o">,</span> <span class="s2">"mile"</span><span class="o">)</span>
+</code></pre>
+</div>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Fit File Parser</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>Fit File Parser</li>
+          <li><a href="mailto:dev@benbr.com">dev@benbr.com</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Fit file parser (.fit) for Garmin and many other devices.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
