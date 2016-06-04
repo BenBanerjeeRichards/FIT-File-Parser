@@ -6,9 +6,10 @@
 - [x] Parse FIT files
 - [x] Link to global profile, including resolution of dynamic fields
 - [X] Type conversion and special value handling (including timestamps)
-- [ ] Data exports - text, XML, json, CSV
+- [X] Data exports - text, json, CSV
 - [ ] Process records - find abnormal data
 - [ ] Writing data to FIT files
+- [ ] Command line interface
 
 ## Introduction
 
