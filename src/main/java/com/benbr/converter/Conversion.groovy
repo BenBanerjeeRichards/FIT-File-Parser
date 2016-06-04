@@ -4,8 +4,8 @@ class Conversion {
 
     private Double constantMultipleBy;
     private Double constantAddTo;
-    private Unit unitFrom;
-    private Unit unitTo;
+    private String unitFrom;
+    private String unitTo;
 
     Double getConstantMultipleBy() {
         return constantMultipleBy
@@ -15,28 +15,28 @@ class Conversion {
         return constantAddTo
     }
 
-    Unit getUnitFrom() {
+    String getUnitFrom() {
         return unitFrom
     }
 
-    Unit getUnitTo() {
+    String getUnitTo() {
         return unitTo
     }
 
     // Builder pattern
-    public Conversion to(Unit unitTo) {
+    public Conversion to(String unitTo) {
         this.unitTo = unitTo
         return this
     }
 
-    public Conversion from(Unit unitFrom) {
+    public Conversion from(String unitFrom) {
         this.unitFrom = unitFrom
         return this
     }
 
     public Conversion constants(Double constantMultiplyBy, Double constantAddTo) {
         if (constantMultiplyBy == 0d) {
-            throw new ConvertException("Invalid constant (multiplyBy) - must be a non zero value")
+            throw new ConvertException("Invalid constant (multiplyBy) - must be a non-zero value")
         }
 
         this.constantAddTo = constantAddTo

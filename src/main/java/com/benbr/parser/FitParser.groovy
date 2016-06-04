@@ -23,7 +23,6 @@ class FitParser {
         profile = new CSVProfileParser(profileFile).getFields()
         types = new CSVTypeParser(new InputStreamReader(loader.getResourceAsStream("types.csv"))).parse()
 
-        Constants.populateUnitToSymbol()
         Converter.loadConversions()
     }
 

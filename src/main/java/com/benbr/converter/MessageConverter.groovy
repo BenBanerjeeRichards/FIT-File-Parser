@@ -12,25 +12,29 @@ class MessageConverter {
     }
 
     Double convertField(String fieldName, String fieldUnit, double value) {
-        if (fieldUnit == null) return null
-        Unit currentUnit = (Unit)Constants.unitToSymbol.getBackwards(fieldUnit)
+        if (fieldUnit == "") return null
+        String currentUnit = Converter.getUnitName(fieldUnit)
 
-        Unit unitTo = fieldUnitPostConversion(fieldName, fieldUnit);
-        if (unitTo == currentUnit) return null;
+        if (fieldUnit == "m") {
+            println "Hello"
+        }
+
+        String unitTo = Converter.getUnitName(fieldUnitPostConversion(fieldName, fieldUnit));
+        if (unitTo == currentUnit || currentUnit == null) return null;
+
         return Converter.convert(value, currentUnit, unitTo)
     }
 
-    public Unit fieldUnitPostConversion(String fieldname, String fieldUnit) {
-        Unit currentUnit = (Unit)Constants.unitToSymbol.getBackwards(fieldUnit)
-        Unit unitTo;
+    public String fieldUnitPostConversion(String fieldName, String fieldUnit) {
+        String unitTo;
 
-        if (conversionPolicy.getFieldPolicy()[fieldname] != null) {
-            unitTo = conversionPolicy.getFieldPolicy()[fieldname]
-        } else if (conversionPolicy.getUnitPolicy()[currentUnit]) {
-            unitTo = conversionPolicy.getUnitPolicy()[currentUnit]
+        if (conversionPolicy.getFieldPolicy()[fieldName] != null) {
+            unitTo = Converter.getUnitSymbol(conversionPolicy.getFieldPolicy()[fieldName])
+        } else if (conversionPolicy.getUnitPolicy()[Converter.getUnitName(fieldUnit)]) {
+            unitTo = Converter.getUnitSymbol(conversionPolicy.getUnitPolicy()[Converter.getUnitName(fieldUnit)])
         }
 
-        return (unitTo == null) ? currentUnit : unitTo;
+        return (unitTo == null) ? fieldUnit : unitTo;
     }
 
     public DataMessage convertMessage(DataMessage message) {
@@ -45,7 +49,7 @@ class MessageConverter {
                 convertedValue = convertField((String)field.getKey(), fieldUnit, (double)field.getValue())
             }
             if (convertedValue != null) {
-                String unit = Constants.unitToSymbol.getForwards(fieldUnitPostConversion((String)field.getKey(), fieldUnit))
+                String unit = fieldUnitPostConversion((String)field.getKey(), fieldUnit)
                 converted.fields[(String)field.getKey()] = convertedValue
                 converted.unitSymbols[(String)field.getKey()] = unit
             } else {
@@ -54,6 +58,7 @@ class MessageConverter {
             }
         }
 
+        converted.type = message.type;
         return converted;
     }
 

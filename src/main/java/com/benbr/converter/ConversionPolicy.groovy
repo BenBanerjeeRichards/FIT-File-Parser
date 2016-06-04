@@ -2,24 +2,24 @@ package main.java.com.benbr.converter
 
 class ConversionPolicy {
 
-    private HashMap<String, Unit> fieldPolicy;
-    private HashMap<Unit, Unit> unitPolicy;
+    private HashMap<String, String> fieldPolicy;
+    private HashMap<String, String> unitPolicy;
 
-    ConversionPolicy(HashMap<String, Unit> fieldPolicy, HashMap<Unit, Unit> unitPolicy) {
+    ConversionPolicy(HashMap<String, String> fieldPolicy, HashMap<String, String> unitPolicy) {
         this.fieldPolicy = fieldPolicy
         this.unitPolicy = unitPolicy
     }
 
-    ConversionPolicy(HashMap<String, Unit> fieldPolicy) {
+    ConversionPolicy(HashMap<String, String> fieldPolicy) {
         this.fieldPolicy = fieldPolicy
         this.unitPolicy = [:]
     }
 
-    HashMap<String, Unit> getFieldPolicy() {
+    HashMap<String, String> getFieldPolicy() {
         return fieldPolicy
     }
 
-    HashMap<Unit, Unit> getUnitPolicy() {
+    HashMap<String, String> getUnitPolicy() {
         return unitPolicy
     }
 }

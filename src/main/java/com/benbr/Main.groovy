@@ -1,5 +1,8 @@
 package main.java.com.benbr
 
+import main.java.com.benbr.converter.ConversionPolicy
+import main.java.com.benbr.converter.Converter
+import main.java.com.benbr.converter.MessageConverter
 import main.java.com.benbr.format.HTMLFITFormatter
 import main.java.com.benbr.format.JsonFITFormatter
 import main.java.com.benbr.format.TextFITFormatter
@@ -10,11 +13,20 @@ class Main {
 
     public static void main(String[] args) {
 
-        def parser = new FitParser()
-        List<DataMessage> messages = parser.parse(new File("fit/fit.fit"))
+        HashMap<String, String> unitPolicy = [
+                semicircle : "degree",
+                metre : "mile"
+        ]
 
-        messages.each {message ->
-            println new JsonFITFormatter().formatDataMessage(message)
+        HashMap<String, String> fieldPolicy = [
+                altitude : "feet"
+        ]
+
+        def converter = new MessageConverter(new ConversionPolicy(fieldPolicy, unitPolicy))
+
+
+        new FitParser().parse(new File("fit/fit.fit"))each {message->
+            println new TextFITFormatter().formatDataMessage(converter.convertMessage(message))
         }
     }
 
