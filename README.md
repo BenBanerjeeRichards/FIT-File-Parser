@@ -30,8 +30,8 @@ The following example iterates over each data message in the FIT file, and then 
 new FitParser().parse(new File("fit/fit.fit"))each {message ->
     println message.getType()
 
-    message.fields.each { field ->
-        println "\t ${field.getKey()} : ${field.getValue()}"
+    message.fields.each { key, value ->
+        println "\t $key : $value"
     }
 }
 ```
