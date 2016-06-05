@@ -15,10 +15,6 @@ class MessageConverter {
         if (fieldUnit == "") return null
         String currentUnit = Converter.getUnitName(fieldUnit)
 
-        if (fieldUnit == "m") {
-            println "Hello"
-        }
-
         String unitTo = Converter.getUnitName(fieldUnitPostConversion(fieldName, fieldUnit));
         if (unitTo == currentUnit || currentUnit == null) return null;
 
