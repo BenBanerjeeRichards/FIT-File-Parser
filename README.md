@@ -12,6 +12,15 @@
 - [ ] Command line interface
 
 
+## Installation
+
+Download the latest `FitParser.jar` from [releases](https://github.com/BenBanerjeeRichards/FIT-File-Parser/releases) and add it to your build path ([Eclipse instructions](http://stackoverflow.com/a/3280384/6023105) | [Intellij IDEA instructions](http://stackoverflow.com/a/16742141/6023105) | [Netbeans Instructions](http://webcache.googleusercontent.com/search?q=cache:https://gpraveenkumar.wordpress.com/2009/06/17/abc-to-import-a-jar-file-in-netbeans-6-5/)).
+
+## Information
+- [Project Wiki](http://benbanerjeerichards.github.io/FIT-File-Parser)
+- _Documentation coming soon_
+
+
 ## Usage
 **IMPORTANT: This project is a work in progress. As a result, the API shown below is not stable and very liable to change**
 
