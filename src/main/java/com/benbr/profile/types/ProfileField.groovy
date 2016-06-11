@@ -23,6 +23,7 @@ class ProfileField {
     private List<Integer> componentBits
     private List<Boolean> accumulate;
     private List<ProfileField> subFields;
+    private List<String> subFieldUnits;
 
 
     ProfileField(Integer definitionNumber, String name, String type) {
@@ -37,7 +38,8 @@ class ProfileField {
     }
 
     // There must be a better way to do immutability.
-    ProfileField(Integer definitionNumber, String name, String type, Boolean isArray, ArrayType arrayType, Integer size, List<Double> scale, String unit, Double offset, List<String> referenceFieldName, List<String> referenceFieldValue, List<String> components, List<Integer> componentBits, List<Boolean> accumulate) {
+    ProfileField(Integer definitionNumber, String name, String type, Boolean isArray, ArrayType arrayType, Integer size, List<Double> scale, List<String> unit, Double offset, List<String> referenceFieldName, List<String> referenceFieldValue, List<String> components, List<Integer> componentBits, List<Boolean> accumulate) {
+        this.definitionNumber = definitionNumber
         this.definitionNumber = definitionNumber
         this.name = name
         this.type = type
@@ -45,7 +47,6 @@ class ProfileField {
         this.arrayType = arrayType
         this.size = size
         this.scale = scale
-        this.unit = unit
         this.offset = offset
         this.referenceFieldNames = referenceFieldName
         this.referenceFieldValue = referenceFieldValue
@@ -53,7 +54,16 @@ class ProfileField {
         this.componentBits = componentBits
         this.subFields = []
         this.accumulate = accumulate
+        this.subFieldUnits = []
 
+        if (unit.size() == 1) {
+            this.unit = unit[0]
+            this.subFieldUnits = null
+        } else {
+            // If there are subfields, the parent field has no unit
+            this.unit = null
+            this.subFieldUnits = unit;
+        }
     }
 
     boolean isDynamicField() {
@@ -117,7 +127,17 @@ class ProfileField {
         return subFields
     }
 
+    public setUnit(String unit) {
+        this.unit = unit
+    }
+
     void addSubField(ProfileField field) {
+        if (field.getUnit() == null || field.getUnit().size() == 0 && this.subFieldUnits != null) {
+            if (subFields.size() < this.subFieldUnits.size()) {
+                field.setUnit(this.subFieldUnits?.get(subFields.size()))
+            }
+        }
+
         this.subFields << field
     }
 
@@ -125,9 +145,28 @@ class ProfileField {
         return accumulate
     }
 
-    void setUnit(String unit) {
-        this.unit = unit
+
+    public String getInitializationCode() {
+        String arrayTypeString = (arrayType == null) ? (null) : ("ArrayType.${arrayType}")
+        def unitCode = subFieldUnits ?: [unit];
+        StringBuilder code =  new StringBuilder("new ProfileField($definitionNumber, \"$name\", \"$type\", ${isArray}, $arrayTypeString, $size, $scale, ${stringifyList(unitCode)}, $offset, ${stringifyList(referenceFieldNames)}, ${stringifyList(referenceFieldValue)}, ${stringifyList(components)}, $componentBits, $accumulate)")
+        subFields.each {sf ->
+            code.append(".addSubField(${sf.getInitializationCode()})")
+        }
+
+        return code.toString()
     }
+
+    private static String stringifyList(List<String> list) {
+        StringBuilder sb = new StringBuilder("[")
+        list.eachWithIndex { it, idx ->
+            String comma = (idx == 0) ? "" : ",";
+            sb.append("$comma \"$it\"")
+        }
+
+        return sb.append("]").toString()
+    }
+
 
     @Override
     public String toString() {
