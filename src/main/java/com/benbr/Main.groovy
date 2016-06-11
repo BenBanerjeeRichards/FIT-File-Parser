@@ -10,6 +10,12 @@ import main.java.com.benbr.parser.DataMessage
 import main.java.com.benbr.parser.FitParser
 
 class Main {
+    private static void generateProfileFiles() {
+        String code = new ProfileCodeGenerator().generateCode(new CSVProfileParser(new FileReader("profile.csv")).getFields())
+        new File("src\\main\\java\\com\\benbr\\Profile.groovy").write(code)
+        code = new TypeCodeGenerator().generateCode(new CSVTypeParser(new FileReader("types.csv")).parse())
+        new File("src\\main\\java\\com\\benbr\\Type.groovy").write(code)
+    }
 
     public static void main(String[] args) {
 
