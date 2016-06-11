@@ -1,0 +1,13 @@
+package main.java.com.benbr.Profile
+
+import main.java.com.benbr.profile.types.ArrayType
+import main.java.com.benbr.profile.types.ProfileField
+
+public class Profile {
+	public static HashMap<String, List<ProfileField>> profile = [:]
+	
+	$constructors
+
+	$builders
+
+}
