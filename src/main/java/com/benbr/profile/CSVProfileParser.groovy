@@ -39,18 +39,24 @@ class CSVProfileParser{
                 continue;
             }
 
-
-            if (isBlank(record.asList()[0..11])) {
+            def list = record.asList()
+            if (isBlank(list[0..11])) {
                 continue;
             }
 
+            if (isBlank(list[1..2]) && isBlank(list[4..11])) {
+                continue
+            }
+
             ProfileField field =  parseField(record)
+
             if (!isValidField(field)) continue;
             if (field.getDefinitionNumber() == null) {
                 currentFieldList.last().addSubField(field)
             } else {
                 currentFieldList << field
             }
+
         }
 
         return fields;
@@ -84,13 +90,21 @@ class CSVProfileParser{
         List<String> components = parseList(record.get(5))
         List<Double> scale = stringListToDoubleList(parseList(record.get(6)))
         double offset = parseDouble(record.get(7))
-        def units = record.get(8)
+        def unitsStr = record.get(8).replace(" ", "").replace("\n", "").replace("\r", "")
+        String[] units = []
+
+        if (unitsStr .contains(",")) {
+            units = unitsStr.split(",")
+        } else {
+            units = [unitsStr]
+        }
+
         def bits = stringListToIntList(parseList(record.get(9)))
         def accumulate = stringToBooleanList(parseList(record.get(10)))
         def refFieldName = parseList(record.get(11))
         def refFieldValue = parseList(record.get(12))
 
-        return new ProfileField(definitionNum, name, type, arraySize != null, arrayType, arraySize, scale, units, offset, refFieldName, refFieldValue, components, bits, accumulate)
+        return new ProfileField(definitionNum, name, type, arraySize != null, arrayType, arraySize, scale, units.toList(), offset, refFieldName, refFieldValue, components, bits, accumulate)
     }
 
     static List<Boolean> stringToBooleanList(List<String> list) {
