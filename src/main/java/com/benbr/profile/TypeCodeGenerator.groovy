@@ -17,7 +17,7 @@ class TypeCodeGenerator {
         }
 
         def typesCode = sb.toString()
-        def template = new File("Type.groovy.template");
+        def template = new File("src/main/resources/Type.groovy.template")
         def res = new SimpleTemplateEngine().createTemplate(template).make([types: typesCode])
         return res.toString()
     }

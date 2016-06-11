@@ -24,7 +24,9 @@ class ProfileCodeGenerator {
             functionProfiles.append("profile << [${generateMessageProfileCode(entry)}]\n")
         }
 
-        File template = new File("Profile.groovy.template");
+
+        // TODO why doesn't getResource or getResourceAsStream not work here?
+        def template = new File("src/main/resources/Profile.groovy.template")
         def res = new SimpleTemplateEngine().createTemplate(template).make([mainbuilder: generateMainBuilderCode(numBuilderFunctions),
                                                                             builders : builderFunctions.toString()])
 
