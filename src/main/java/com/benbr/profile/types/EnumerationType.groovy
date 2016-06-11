@@ -4,9 +4,9 @@ class EnumerationType {
 
     // Hash map uses as the enum index mostly, BUT not not always, increments from one linearly.
 
-    private HashMap<Integer, String> enumeration;
-    private int[] manufacturerRange;
-    private int baseType;           // Contants.baseTypes
+    HashMap<Integer, String> enumeration;
+    int[] manufacturerRange;
+    int baseType;           // Contants.baseTypes
 
     EnumerationType() {
         enumeration = [:]
@@ -25,17 +25,5 @@ class EnumerationType {
 
     HashMap<Integer, String> getEnumeration() {
         return enumeration
-    }
-
-    int[] getManufacturerRange() {
-        return manufacturerRange
-    }
-
-    int getBaseType() {
-        return baseType
-    }
-
-    void setBaseType(int baseType) {
-        this.baseType = baseType
     }
 }
