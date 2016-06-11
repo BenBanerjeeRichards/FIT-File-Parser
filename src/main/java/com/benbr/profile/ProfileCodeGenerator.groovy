@@ -5,7 +5,7 @@ import main.java.com.benbr.profile.types.ProfileField
 
 class ProfileCodeGenerator {
 
-    private final int PROFILES_PER_BUILDER_FUNC = 32
+    private final int PROFILES_PER_BUILDER_FUNC = 8
 
     public String generateCode(HashMap<String, List<ProfileField>> profile) {
         int numBuilderFunctions = 0
@@ -14,9 +14,9 @@ class ProfileCodeGenerator {
 
         profile.eachWithIndex {entry, idx ->
             if (idx % (PROFILES_PER_BUILDER_FUNC - 1) == 0) {
-                numBuilderFunctions += 1;
                 if (idx > 0) {
                     builderFunctions.append(generateBuilderFunction(functionProfiles.toString(), numBuilderFunctions))
+                    numBuilderFunctions += 1;
                 }
 
                 functionProfiles = new StringBuilder()
@@ -25,7 +25,7 @@ class ProfileCodeGenerator {
         }
 
         File template = new File("Profile.groovy.template");
-        def res = new SimpleTemplateEngine().createTemplate(template).make([constructors: generateConstructor(numBuilderFunctions),
+        def res = new SimpleTemplateEngine().createTemplate(template).make([mainbuilder: generateMainBuilderCode(numBuilderFunctions),
                                                                             builders : builderFunctions.toString()])
 
         return res.toString()
@@ -35,10 +35,10 @@ class ProfileCodeGenerator {
         return "\nprivate static _buildSub$id() {\n$profile}\n"
     }
 
-    private static String generateConstructor(int numBuilderFunctions) {
-        def sb = new StringBuilder("public Profile() {\n")
+    private static String generateMainBuilderCode(int numBuilderFunctions) {
+        def sb = new StringBuilder("private static _build() {\n")
 
-        (1..numBuilderFunctions).each {i ->
+        (0..numBuilderFunctions - 1).each {i ->
             sb.append("_buildSub$i()\n")
         }
 

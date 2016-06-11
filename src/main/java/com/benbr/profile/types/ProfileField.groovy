@@ -131,7 +131,7 @@ class ProfileField {
         this.unit = unit
     }
 
-    void addSubField(ProfileField field) {
+    ProfileField addSubField(ProfileField field) {
         if (field.getUnit() == null || field.getUnit().size() == 0 && this.subFieldUnits != null) {
             if (subFields.size() < this.subFieldUnits.size()) {
                 field.setUnit(this.subFieldUnits?.get(subFields.size()))
@@ -139,6 +139,7 @@ class ProfileField {
         }
 
         this.subFields << field
+        return this
     }
 
     List<Boolean> getAccumulate() {

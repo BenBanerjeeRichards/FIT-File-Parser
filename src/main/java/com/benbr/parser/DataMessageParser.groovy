@@ -12,11 +12,9 @@ import main.java.com.benbr.profile.types.EnumerationType
 
 class DataMessageParser {
 
-    private HashMap<String, List<ProfileField>> globalProfile;
     private HashMap<String, EnumerationType> types;
 
-    DataMessageParser(HashMap<String, List<ProfileField>> globalProfile, HashMap<String, EnumerationType> types) {
-        this.globalProfile = globalProfile
+    DataMessageParser(HashMap<String, EnumerationType> types) {
         this.types = types
     }
 
@@ -34,6 +32,7 @@ class DataMessageParser {
 
             def fieldName = globalField?.getName()
             if (globalField?.isArray()) {
+                // TODO finish this and move to another function
                 message.fields[fieldName] = getComponents(bytes, globalField, accumulatedFields)
                 message.unitSymbols[fieldName] = new HashMap<String, String>()
                 message.fieldIsArray[fieldName] = true

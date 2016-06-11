@@ -1,6 +1,7 @@
 package main.java.com.benbr.parser
 
 import main.java.com.benbr.FITDecodeException
+import main.java.com.benbr.Profile
 import main.java.com.benbr.parser.types.ArchitectureType
 import main.java.com.benbr.Util
 import main.java.com.benbr.parser.types.DefinitionMessage
@@ -59,11 +60,11 @@ class DefinitionMessageParser {
         return new FieldDefinition(bytes[0], bytes[1], bytes[2])
     }
 
-    static void associateFieldDefinitionWithGlobalProfile(HashMap<String, List<ProfileField>> profile, DefinitionMessage message, int globalDefinitionID) {
+    static void associateFieldDefinitionWithGlobalProfile(DefinitionMessage message, int globalDefinitionID) {
         String globalName = Constants.messageIdToName[globalDefinitionID]
-        if (!profile.containsKey(globalName)) return;
+        if (!Profile.profile.containsKey(globalName)) return;
 
-        List<ProfileField> globalFields = profile[globalName]
+        List<ProfileField> globalFields = Profile.profile[globalName]
 
         message.getFieldDefinitions().eachWithIndex { FieldDefinition entry, int idx ->
             def globalField = globalFields.find { it.definitionNumber == entry.definitionNumber }

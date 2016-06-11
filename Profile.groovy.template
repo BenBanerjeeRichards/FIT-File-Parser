@@ -1,4 +1,4 @@
-package main.java.com.benbr.Profile
+package main.java.com.benbr
 
 import main.java.com.benbr.profile.types.ArrayType
 import main.java.com.benbr.profile.types.ProfileField
@@ -6,7 +6,7 @@ import main.java.com.benbr.profile.types.ProfileField
 public class Profile {
 	public static HashMap<String, List<ProfileField>> profile = [:]
 	
-	$constructors
+	$mainbuilder
 
 	$builders
 

@@ -19,3 +19,4 @@ standards
 build
 .gradle
 gradle*
+*.csv
