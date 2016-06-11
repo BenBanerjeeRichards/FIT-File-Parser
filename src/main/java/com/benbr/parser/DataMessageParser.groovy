@@ -32,21 +32,22 @@ class DataMessageParser {
 
             def fieldName = globalField?.getName()
             if (globalField?.isArray()) {
-                // TODO finish this and move to another function
+                //TODO  move to another function
                 message.fields[fieldName] = getComponents(bytes, globalField, accumulatedFields)
                 message.unitSymbols[fieldName] = new HashMap<String, String>()
                 message.fieldIsArray[fieldName] = true
 
-                ((Map<String, Object>) message.fields[fieldName]).each { subField ->
-                    def globalSubField = globalField.getComponents().find { it == subField.getKey() }
+                globalField.getComponents().eachWithIndex{ String entry, int i ->
+                    String unit = globalField.getSubFieldUnits()[i]
+                    message.unitSymbols[fieldName][entry] = unit
                 }
 
             } else {
                 fieldName = (fieldName == null) ? generateUniqueUnknownKey(message) : globalField.getName()
                 message.fields[fieldName] = getFieldValue(bytes.toList(), localDefinition, fieldDefinition, globalField)
+                message.unitSymbols[fieldName] = globalField?.getUnit()
             }
 
-            message.unitSymbols[fieldName] = globalField?.getUnit()
         }
 
         if (header.isCompressedTimestamp()) {
@@ -57,6 +58,7 @@ class DataMessageParser {
 
         return message;
     }
+
 
     private long decompressTimestamp(long timestampOffset, long previousTimestamp) {
         if (timestampOffset >= (previousTimestamp & 0x0000001F)) {

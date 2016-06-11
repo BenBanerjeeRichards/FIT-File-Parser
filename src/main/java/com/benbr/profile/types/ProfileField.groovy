@@ -24,7 +24,7 @@ class ProfileField {
     private List<Integer> componentBits
     private List<Boolean> accumulate;
     private List<ProfileField> subFields;
-    private List<String> subFieldUnits;
+    List<String> subFieldUnits;
 
 
     ProfileField(Integer definitionNumber, String name, String type) {
