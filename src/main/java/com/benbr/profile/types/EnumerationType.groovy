@@ -13,7 +13,7 @@ class EnumerationType {
         manufacturerRange = [0xFF, 0xFF]
     }
 
-    public void addType(String name, int value) {
+    public EnumerationType addType(String name, int value) {
         if (name.equals("mfg_range_min")) {
             manufacturerRange[0] = value
         } else if (name.equals("mfg_range_max")) {
@@ -21,9 +21,16 @@ class EnumerationType {
         } else {
             enumeration[value] = name
         }
+
+        return this
     }
 
     HashMap<Integer, String> getEnumeration() {
         return enumeration
+    }
+
+    EnumerationType setBaseType(int baseType) {
+        this.baseType = baseType
+        return this
     }
 }
