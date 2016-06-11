@@ -35,6 +35,13 @@ class DataMessageParser {
             def fieldName = globalField?.getName()
             if (globalField?.isArray()) {
                 message.fields[fieldName] = getComponents(bytes, globalField, accumulatedFields)
+                message.unitSymbols[fieldName] = new HashMap<String, String>()
+                message.fieldIsArray[fieldName] = true
+
+                ((Map<String, Object>)message.fields[fieldName]).each { subField ->
+                    def globalSubField = globalField.getComponents().find{it == subField.getKey()}
+                }
+
             } else {
                 fieldName = (fieldName == null) ? generateUniqueUnknownKey(message) : globalField.getName()
                 message.fields[fieldName] = getFieldValue(bytes.toList(), localDefinition, fieldDefinition, globalField)
@@ -59,7 +66,7 @@ class DataMessageParser {
         return (previousTimestamp & 0xFFFFFFE0) + timestampOffset + 0x20
     }
 
-    private Map getComponents(List<Integer> bytes, ProfileField globalField, Map<String, Object> accumulatedFields) {
+    private Map<String, Object> getComponents(List<Integer> bytes, ProfileField globalField, Map<String, Object> accumulatedFields) {
         def components = [:]
         int currentBitPosition = 0
 

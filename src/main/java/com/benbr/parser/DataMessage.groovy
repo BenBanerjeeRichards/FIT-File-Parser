@@ -3,11 +3,13 @@ package main.java.com.benbr.parser
 class DataMessage {
     String type;
     HashMap<String, Object> fields
-    HashMap<String, String> unitSymbols;
+    HashMap<String, Object> unitSymbols;
+    HashMap<String, Boolean> fieldIsArray;
 
     DataMessage() {
         fields = [:]
         unitSymbols = [:]
+        fieldIsArray = [:]
     }
 
     def propertyMissing(String name, String value) {
