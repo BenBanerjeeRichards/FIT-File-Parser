@@ -1,7 +1,7 @@
 package main.java.com.benbr.parser
 
-import main.java.com.benbr.parser.types.FileHeader
 import main.java.com.benbr.Util
+import main.java.com.benbr.parser.types.FileHeader
 
 class FileHeaderParser {
 

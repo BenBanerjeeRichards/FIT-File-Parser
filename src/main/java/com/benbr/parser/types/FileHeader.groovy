@@ -12,10 +12,10 @@ class FileHeader {
 
     boolean isValid() {
         if (size != 12 && size != 14) return false
-        if (dataType[0] != (char)0x2E) return false
-        if (dataType[1] != (char)0x46) return false
-        if (dataType[2] != (char)0x49) return false
-        if (dataType[3] != (char)0x54) return false
+        if (dataType[0] != (char) 0x2E) return false
+        if (dataType[1] != (char) 0x46) return false
+        if (dataType[2] != (char) 0x49) return false
+        if (dataType[3] != (char) 0x54) return false
         return true
     }
 

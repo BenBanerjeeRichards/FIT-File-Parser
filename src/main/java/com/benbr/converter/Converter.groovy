@@ -6,6 +6,7 @@ final class Converter {
 
     private static HashMap<String, Double[]> conversions = [:]
     private static BiMap units = new BiMap()
+
     private Converter() {}
 
     static void loadConversions() {
@@ -13,7 +14,7 @@ final class Converter {
         addConversion(new Conversion().from("metre").to("mile").constants(0.00062137, 0))
         addConversion(new Conversion().from("kilometre").to("metre").constants(1000, 0))
         addConversion(new Conversion().from("metre").to("feet").constants(3.28084, 0))
-        addConversion(new Conversion().from("semicircle").to("degree").constants((180d) / (double)(Math.pow(2, 31)), 0))
+        addConversion(new Conversion().from("semicircle").to("degree").constants((180d) / (double) (Math.pow(2, 31)), 0))
 
         addUnit("semicircle", "semicircles")
         addUnit("celsius", "C")
@@ -29,7 +30,7 @@ final class Converter {
 
         // Other direction
         Double multiplyBy = 1 / conversion.getConstantMultipleBy()
-        Double addTo =  -1 * conversion.getConstantAddTo() / conversion.getConstantMultipleBy()
+        Double addTo = -1 * conversion.getConstantAddTo() / conversion.getConstantMultipleBy()
         addToMap(conversion.getUnitTo(), conversion.getUnitFrom(), multiplyBy, addTo)
     }
 
@@ -42,7 +43,7 @@ final class Converter {
 
     static double convert(double value, String unitFrom, String unitTo) {
         Double[] constants = conversions[getKey(unitFrom, unitTo)]
-        if(constants == null) {
+        if (constants == null) {
             throw new ConvertException("No conversion found for units specified (${unitFrom} -> ${unitTo})")
         }
 

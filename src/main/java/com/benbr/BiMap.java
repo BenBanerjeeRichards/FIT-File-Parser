@@ -21,22 +21,22 @@ public class BiMap implements Map {
 
     @Override
     public boolean isEmpty() {
-        throw new  NotImplementedException();
+        throw new NotImplementedException();
     }
 
     @Override
     public boolean containsKey(Object key) {
-        throw new  NotImplementedException();
+        throw new NotImplementedException();
     }
 
     @Override
     public boolean containsValue(Object value) {
-        throw new  NotImplementedException();
+        throw new NotImplementedException();
     }
 
     @Override
     public Object get(Object key) {
-        throw new  NotImplementedException();
+        throw new NotImplementedException();
     }
 
     @Override
@@ -47,12 +47,12 @@ public class BiMap implements Map {
 
     @Override
     public Object remove(Object key) {
-        throw new  NotImplementedException();
+        throw new NotImplementedException();
     }
 
     @Override
     public void putAll(Map m) {
-        throw new  NotImplementedException();
+        throw new NotImplementedException();
     }
 
     @Override
@@ -63,17 +63,17 @@ public class BiMap implements Map {
 
     @Override
     public Set keySet() {
-        throw new  NotImplementedException();
+        throw new NotImplementedException();
     }
 
     @Override
     public Collection values() {
-        throw new  NotImplementedException();
+        throw new NotImplementedException();
     }
 
     @Override
     public Set<Entry> entrySet() {
-        throw new  NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public Object getForwards(Object key) {

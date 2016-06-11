@@ -4,6 +4,7 @@ package main.java.com.benbr.profile.types
 enum ArrayType {
     SIZE_N, SIZE_INTEGER
 }
+
 class ProfileField {
 
     private Integer definitionNumber
@@ -150,8 +151,8 @@ class ProfileField {
     public String getInitializationCode() {
         String arrayTypeString = (arrayType == null) ? (null) : ("ArrayType.${arrayType}")
         def unitCode = subFieldUnits ?: [unit];
-        StringBuilder code =  new StringBuilder("new ProfileField($definitionNumber, \"$name\", \"$type\", ${isArray}, $arrayTypeString, $size, $scale, ${stringifyList(unitCode)}, $offset, ${stringifyList(referenceFieldNames)}, ${stringifyList(referenceFieldValue)}, ${stringifyList(components)}, $componentBits, $accumulate)")
-        subFields.each {sf ->
+        StringBuilder code = new StringBuilder("new ProfileField($definitionNumber, \"$name\", \"$type\", ${isArray}, $arrayTypeString, $size, $scale, ${stringifyList(unitCode)}, $offset, ${stringifyList(referenceFieldNames)}, ${stringifyList(referenceFieldValue)}, ${stringifyList(components)}, $componentBits, $accumulate)")
+        subFields.each { sf ->
             code.append(".addSubField(${sf.getInitializationCode()})")
         }
 

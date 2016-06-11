@@ -1,14 +1,14 @@
 package main.java.com.benbr
 
-import main.java.com.benbr.profile.types.EnumerationType
 import main.java.com.benbr.profile.Constants
+import main.java.com.benbr.profile.types.EnumerationType
 
 class Util {
 
     private static int bytesRead = 0;
 
     static int read(DataInputStream input) {
-        int data =  input.read()
+        int data = input.read()
         bytesRead += 1;
         return data
     }
@@ -16,7 +16,7 @@ class Util {
     static int[] readUnsignedValues(DataInputStream input, int bytesToRead) {
         int[] unsignedValues = new int[bytesToRead]
 
-        (0..bytesToRead - 1).eachWithIndex{ int entry, int idx ->
+        (0..bytesToRead - 1).eachWithIndex { int entry, int idx ->
             if (input.available() == 0) return;
             unsignedValues[idx] = input.readUnsignedByte()
         }
@@ -36,7 +36,7 @@ class Util {
 
     static int[] littleToBigEndian(List<Integer> input) {
         int[] out = new int[input.size()]
-        input.eachWithIndex{ int it, int idx ->
+        input.eachWithIndex { int it, int idx ->
             out[input.size() - idx - 1] = it
         }
 
@@ -45,7 +45,7 @@ class Util {
 
     static int typeNameToNumBytes(HashMap<String, EnumerationType> profile, String typeName) {
         // Is it a base type
-        boolean isBaseType = Constants.baseTypes.find {it.value == typeName} != null
+        boolean isBaseType = Constants.baseTypes.find { it.value == typeName } != null
 
         if (isBaseType) {
             return baseTypenameToNumBytes(typeName)
@@ -56,12 +56,12 @@ class Util {
     }
 
     static int profileTypeNameToNumBytes(HashMap<String, EnumerationType> profile, String typeName) {
-        def type = profile.find {it.key == typeName}
+        def type = profile.find { it.key == typeName }
         if (type == null) {
             throw new FITDecodeException("Could not find type named ${typeName} in profile")
         }
 
-        return baseTypenameToNumBytes((String)Constants.baseTypes[type.value.baseType]);
+        return baseTypenameToNumBytes((String) Constants.baseTypes[type.value.baseType]);
     }
 
     static int baseTypenameToNumBytes(String typeName) {
@@ -76,7 +76,7 @@ class Util {
         return 0;
     }
 
-        static boolean typeIsNumber(String typename) {
+    static boolean typeIsNumber(String typename) {
         int size = baseTypenameToNumBytes(typename)
         return (size > 0) && typename != "enum" && typename != "byte"
     }
@@ -89,7 +89,7 @@ class Util {
         if (val == null) {
             return null
         }
-        return (val >> (7-bitIdx)) & 1
+        return (val >> (7 - bitIdx)) & 1
     }
 
     static Long readBits(List<Integer> bytes, int offset, int numBits) {

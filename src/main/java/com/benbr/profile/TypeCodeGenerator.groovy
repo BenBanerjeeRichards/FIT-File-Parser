@@ -8,7 +8,7 @@ class TypeCodeGenerator {
     public String generateCode(HashMap<String, EnumerationType> types) {
         def sb = new StringBuilder()
 
-        types.eachWithIndex{ key, value, idx ->
+        types.eachWithIndex { key, value, idx ->
             if (idx != 0) {
                 sb.append(",")
             }

@@ -2,8 +2,8 @@ package main.java.com.benbr.parser
 
 import main.java.com.benbr.FITDecodeException
 import main.java.com.benbr.Profile
-import main.java.com.benbr.parser.types.ArchitectureType
 import main.java.com.benbr.Util
+import main.java.com.benbr.parser.types.ArchitectureType
 import main.java.com.benbr.parser.types.DefinitionMessage
 import main.java.com.benbr.parser.types.FieldDefinition
 import main.java.com.benbr.parser.types.MessageHeader
@@ -40,7 +40,7 @@ class DefinitionMessageParser {
         if (header.getReserved() == 1) {
             int numDevFields = inputStream.read()
 
-            if(numDevFields != 0) {
+            if (numDevFields != 0) {
                 (1..numDevFields).each {
                     devFields << parseField(inputStream)
                 }

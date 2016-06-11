@@ -20,7 +20,7 @@ class CSVTypeParser {
         EnumerationType currentType = new EnumerationType()
         String currentTypeName = ""
 
-        records.each {record ->
+        records.each { record ->
             if (!reachedTitleRow) {
                 reachedTitleRow = true;
                 return
@@ -35,7 +35,7 @@ class CSVTypeParser {
                 // Only bother writing the next type of it has been filled out.
                 // This will only be false the first time, as there has been no previous enumeration values
                 if (currentType.getEnumeration().size() > 0) {
-                    types << ["$currentTypeName" : currentType]
+                    types << ["$currentTypeName": currentType]
                 }
 
                 // Update new state
@@ -48,7 +48,7 @@ class CSVTypeParser {
                     type = "uint8"
                 }
 
-                currentType.setBaseType(Constants.baseTypes.find {it.value.equals(type)}.key)
+                currentType.setBaseType(Constants.baseTypes.find { it.value.equals(type) }.key)
             } else {
                 currentType.addType(record.getAt(2), toInteger(record.getAt(3)))
             }

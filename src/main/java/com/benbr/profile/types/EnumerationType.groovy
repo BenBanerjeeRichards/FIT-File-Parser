@@ -37,7 +37,7 @@ class EnumerationType {
     String getInitializationCode() {
         def sb = new StringBuilder("new EnumerationType().setBaseType($baseType)")
 
-        enumeration.each {value, name ->
+        enumeration.each { value, name ->
             sb.append(".addType(\"$name\", $value)")
         }
 

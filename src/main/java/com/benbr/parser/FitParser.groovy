@@ -1,11 +1,10 @@
 package main.java.com.benbr.parser
 
 import main.java.com.benbr.Profile
-import main.java.com.benbr.converter.Converter
-import main.java.com.benbr.parser.types.MessageType
 import main.java.com.benbr.Util
+import main.java.com.benbr.converter.Converter
 import main.java.com.benbr.parser.types.DefinitionMessage
-import main.java.com.benbr.profile.types.EnumerationType
+import main.java.com.benbr.parser.types.MessageType
 
 import java.util.concurrent.LinkedBlockingQueue
 
@@ -15,7 +14,7 @@ class FitParser {
     public FitParser() {
         Converter.loadConversions()
 
-        if (Profile.profile.size() == 0)   {
+        if (Profile.profile.size() == 0) {
             Profile.invokeMethod("_build", null)
         }
 

@@ -12,7 +12,7 @@ class ProfileCodeGenerator {
         def functionProfiles;
         def builderFunctions = new StringBuilder();
 
-        profile.eachWithIndex {entry, idx ->
+        profile.eachWithIndex { entry, idx ->
             if (idx % (PROFILES_PER_BUILDER_FUNC - 1) == 0) {
                 if (idx > 0) {
                     builderFunctions.append(generateBuilderFunction(functionProfiles.toString(), numBuilderFunctions))
@@ -24,11 +24,10 @@ class ProfileCodeGenerator {
             functionProfiles.append("profile << [${generateMessageProfileCode(entry)}]\n")
         }
 
-
         // TODO why doesn't getResource or getResourceAsStream not work here?
         def template = new File("src/main/resources/Profile.groovy.template")
         def res = new SimpleTemplateEngine().createTemplate(template).make([mainbuilder: generateMainBuilderCode(numBuilderFunctions),
-                                                                            builders : builderFunctions.toString()])
+                                                                            builders   : builderFunctions.toString()])
 
         return res.toString()
     }
@@ -40,7 +39,7 @@ class ProfileCodeGenerator {
     private static String generateMainBuilderCode(int numBuilderFunctions) {
         def sb = new StringBuilder("private static _build() {\n")
 
-        (0..numBuilderFunctions - 1).each {i ->
+        (0..numBuilderFunctions - 1).each { i ->
             sb.append("_buildSub$i()\n")
         }
 
@@ -51,7 +50,7 @@ class ProfileCodeGenerator {
     private static generateMessageProfileCode(Map.Entry<String, List<ProfileField>> message) {
         StringBuilder sb = new StringBuilder("${message.getKey()} : [")
 
-        message.getValue().eachWithIndex {field, idx ->
+        message.getValue().eachWithIndex { field, idx ->
             sb.append(field.getInitializationCode())
             if (idx != message.getValue().size() - 1) {
                 sb.append(",")

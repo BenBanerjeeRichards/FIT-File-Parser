@@ -7,9 +7,9 @@ import main.java.com.benbr.parser.types.ArchitectureType
 import main.java.com.benbr.parser.types.DefinitionMessage
 import main.java.com.benbr.parser.types.FieldDefinition
 import main.java.com.benbr.parser.types.MessageHeader
-import main.java.com.benbr.profile.types.ProfileField
 import main.java.com.benbr.profile.Constants
 import main.java.com.benbr.profile.types.EnumerationType
+import main.java.com.benbr.profile.types.ProfileField
 
 class DataMessageParser {
 
@@ -37,8 +37,8 @@ class DataMessageParser {
                 message.unitSymbols[fieldName] = new HashMap<String, String>()
                 message.fieldIsArray[fieldName] = true
 
-                ((Map<String, Object>)message.fields[fieldName]).each { subField ->
-                    def globalSubField = globalField.getComponents().find{it == subField.getKey()}
+                ((Map<String, Object>) message.fields[fieldName]).each { subField ->
+                    def globalSubField = globalField.getComponents().find { it == subField.getKey() }
                 }
 
             } else {
@@ -69,10 +69,10 @@ class DataMessageParser {
         def components = [:]
         int currentBitPosition = 0
 
-        globalField.getComponents().reverse().eachWithIndex{ component, idx ->
+        globalField.getComponents().reverse().eachWithIndex { component, idx ->
             int index = globalField.getComponents().size() - idx - 1
             int bits = globalField.getComponentBits()[index]
-            double value = (Double)TypeEncoder.applyScaleAndOffset(Util.readBits(bytes, currentBitPosition, bits), globalField, index)
+            double value = (Double) TypeEncoder.applyScaleAndOffset(Util.readBits(bytes, currentBitPosition, bits), globalField, index)
             currentBitPosition += bits
 
             if (globalField.getAccumulate()[index]) {
@@ -95,7 +95,7 @@ class DataMessageParser {
             if (difference >= 0) {
                 fieldValue = prev[1] + difference
             } else if (difference < 0) {
-                double rolloverIncrement = (Double)TypeEncoder.applyScaleAndOffset(Math.pow(2, bits), globalField, globalFieldIndex)
+                double rolloverIncrement = (Double) TypeEncoder.applyScaleAndOffset(Math.pow(2, bits), globalField, globalFieldIndex)
                 int rolloverMultiplier = 1 + (prev[1] / rolloverIncrement)
                 fieldValue = value + rolloverIncrement * rolloverMultiplier
             }
@@ -129,14 +129,14 @@ class DataMessageParser {
     /**
      * Generates unknown field names in the form unknown_N, where N is an integer.
      * For example, unknown_1, unknown_2...
-      * @param message
+     * @param message
      */
     private static String generateUniqueUnknownKey(DataMessage message) {
         // TODO store the largest value of N instead of recalculating it every time.
         List postfixes = []
 
-        message.fields.each {name, value ->
-            name = (String)name;
+        message.fields.each { name, value ->
+            name = (String) name;
             def parts = name.split("unknown")
 
             if (parts.size() == 2) {
@@ -150,7 +150,7 @@ class DataMessageParser {
     }
 
     private void resolveDynamicFields(DataMessage message, DefinitionMessage localDefinition) {
-        localDefinition.getFieldDefinitions().eachWithIndex {fieldDefinition, idx ->
+        localDefinition.getFieldDefinitions().eachWithIndex { fieldDefinition, idx ->
             ProfileField globalField = localDefinition.getGlobalFields()[idx]
 
             if (globalField == null) {

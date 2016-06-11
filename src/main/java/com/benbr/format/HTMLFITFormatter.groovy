@@ -2,9 +2,8 @@ package main.java.com.benbr.format
 
 import groovy.xml.MarkupBuilder
 import main.java.com.benbr.parser.DataMessage
-import main.java.com.benbr.parser.types.DefinitionMessage
 
-class HTMLFITFormatter implements FITFormatter{
+class HTMLFITFormatter implements FITFormatter {
     String formatDataMessage(DataMessage message) {
 
         // This looks very messy.
@@ -22,18 +21,18 @@ class HTMLFITFormatter implements FITFormatter{
         //</div>
 
         def writer = new StringWriter()
-        new MarkupBuilder(writer).div (class:'fit-record') {
-                span(message.getType(), class:'fit-record-name')
+        new MarkupBuilder(writer).div(class: 'fit-record') {
+            span(message.getType(), class: 'fit-record-name')
 
-                table(class:'fit-record-fields') {
-                    message.fields.each {field ->
-                        tr {
-                            td(field.getKey(), class:'fit-field-name')
-                            td(field.getValue(), class:'fit-field-value')
-                            td(message.unitSymbols[field.getKey()], class:'fit-field-unit')
-                        }
+            table(class: 'fit-record-fields') {
+                message.fields.each { field ->
+                    tr {
+                        td(field.getKey(), class: 'fit-field-name')
+                        td(field.getValue(), class: 'fit-field-value')
+                        td(message.unitSymbols[field.getKey()], class: 'fit-field-unit')
                     }
                 }
+            }
         }
 
         return writer.getBuffer().toString()

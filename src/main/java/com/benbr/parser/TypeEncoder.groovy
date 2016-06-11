@@ -1,7 +1,7 @@
 package main.java.com.benbr.parser
 
-import main.java.com.benbr.profile.types.ProfileField
 import main.java.com.benbr.profile.Constants
+import main.java.com.benbr.profile.types.ProfileField
 
 class TypeEncoder<T> {
 
@@ -34,14 +34,14 @@ class TypeEncoder<T> {
     }
 
 
-    static T applyScaleAndOffset(Number value, ProfileField definition, int componentIndex=0) {
+    static T applyScaleAndOffset(Number value, ProfileField definition, int componentIndex = 0) {
         if (definition == null) {
             return value
         }
 
         float scale = definition.getScale()[componentIndex] == null ? 1 : definition.getScale()[componentIndex]
         if (scale == 1f) {
-            return value - (int)definition.getOffset()
+            return value - (int) definition.getOffset()
         }
         return (value / scale) - definition.getOffset()
     }

@@ -5,7 +5,7 @@ import main.java.com.benbr.profile.types.ProfileField
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVRecord
 
-class CSVProfileParser{
+class CSVProfileParser {
 
     private Reader file;
 
@@ -22,13 +22,13 @@ class CSVProfileParser{
         String currentMessageName = null;
         Boolean titleReached = false;
 
-        for (def record: records) {
+        for (def record : records) {
             if (!titleReached) {
                 titleReached = true;
                 continue
             }
 
-            def msgType =  record.get(0)
+            def msgType = record.get(0)
             if (msgType.size() != 0) {
                 if (currentFieldList.size() != 0 && currentMessageName != null) {
                     fields[currentMessageName] = currentFieldList
@@ -48,7 +48,7 @@ class CSVProfileParser{
                 continue
             }
 
-            ProfileField field =  parseField(record)
+            ProfileField field = parseField(record)
 
             if (!isValidField(field)) continue;
             if (field.getDefinitionNumber() == null) {
@@ -67,11 +67,11 @@ class CSVProfileParser{
     }
 
     static boolean isBlankField(ProfileField field) {
-        return  (field.getDefinitionNumber() == null && field.getName().equals("")
+        return (field.getDefinitionNumber() == null && field.getName().equals("")
                 && field.getType().equals(""))
     }
 
-    static boolean isTitle(ProfileField field){
+    static boolean isTitle(ProfileField field) {
         return (field.getDefinitionNumber() == null && field.getName().equals("") && field.getType().size() > 0)
     }
 
@@ -93,7 +93,7 @@ class CSVProfileParser{
         def unitsStr = record.get(8).replace(" ", "").replace("\n", "").replace("\r", "")
         String[] units = []
 
-        if (unitsStr .contains(",")) {
+        if (unitsStr.contains(",")) {
             units = unitsStr.split(",")
         } else {
             units = [unitsStr]
