@@ -1,6 +1,7 @@
 package main.java.com.benbr.parser
 
 import main.java.com.benbr.FITDecodeException
+import main.java.com.benbr.Type
 import main.java.com.benbr.Util
 import main.java.com.benbr.parser.types.ArchitectureType
 import main.java.com.benbr.parser.types.DefinitionMessage
@@ -14,8 +15,7 @@ class DataMessageParser {
 
     private HashMap<String, EnumerationType> types;
 
-    DataMessageParser(HashMap<String, EnumerationType> types) {
-        this.types = types
+    DataMessageParser() {
     }
 
     public DataMessage parse(DataInputStream inputStream, MessageHeader header, HashMap<Integer, DefinitionMessage> localDefinitions, HashMap<String, Object> accumulatedFields, long referenceTimestamp) {
@@ -197,7 +197,7 @@ class DataMessageParser {
         String referenceFieldType = referenceField.key
         int parentFieldValue = (int) referenceField.value
 
-        def referenceFieldTypeMatches = types.find { it.key == referenceFieldType }
+        def referenceFieldTypeMatches = Type.types.find { it.key == referenceFieldType }
         if (referenceFieldTypeMatches == null) {
             throw new FITDecodeException("Reference field type $referenceFieldType not found in profile types")
         }

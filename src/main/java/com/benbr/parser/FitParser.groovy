@@ -3,7 +3,6 @@ package main.java.com.benbr.parser
 import main.java.com.benbr.Profile
 import main.java.com.benbr.converter.Converter
 import main.java.com.benbr.parser.types.MessageType
-import main.java.com.benbr.profile.CSVTypeParser
 import main.java.com.benbr.Util
 import main.java.com.benbr.parser.types.DefinitionMessage
 import main.java.com.benbr.profile.types.EnumerationType
@@ -12,12 +11,8 @@ import java.util.concurrent.LinkedBlockingQueue
 
 class FitParser {
 
-    private HashMap<String, EnumerationType> types;
 
     public FitParser() {
-        ClassLoader loader = getClass().getClassLoader()
-        types = new CSVTypeParser(new InputStreamReader(loader.getResourceAsStream("types.csv"))).parse()
-
         Converter.loadConversions()
 
         if (Profile.profile.size() == 0)   {
@@ -46,7 +41,7 @@ class FitParser {
                 locals.put(header.getLocalMessageType(), message)
                 DefinitionMessageParser.associateFieldDefinitionWithGlobalProfile(message, message.getGlobalMessageNumber())
             } else {
-                DataMessage message = new DataMessageParser(types).parse(fitStream, header, locals, accumulatedFields, timestampReference)
+                DataMessage message = new DataMessageParser().parse(fitStream, header, locals, accumulatedFields, timestampReference)
 
                 if (!header.isCompressedTimestamp() && message.fields["timestamp"] != null) {
                     timestampReference = message.timestamp

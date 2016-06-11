@@ -33,4 +33,15 @@ class EnumerationType {
         this.baseType = baseType
         return this
     }
+
+    String getInitializationCode() {
+        def sb = new StringBuilder("new EnumerationType().setBaseType($baseType)")
+
+        enumeration.each {value, name ->
+            sb.append(".addType(\"$name\", $value)")
+        }
+
+        return sb.toString()
+    }
+
 }

@@ -1,0 +1,10 @@
+package main.java.com.benbr
+
+import main.java.com.benbr.profile.types.EnumerationType
+
+public class Type {
+	public static HashMap<String, EnumerationType> types = [
+		$types
+	]
+	
+}
