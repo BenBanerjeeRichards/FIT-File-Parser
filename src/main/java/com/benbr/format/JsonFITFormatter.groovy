@@ -12,9 +12,7 @@ class JsonFITFormatter implements FITFormatter {
 
         message.fields.eachWithIndex { field, int idx ->
             String comma = idx == message.fields.size() - 1 ? "" : ",";
-            json.append(/{"name":"${field.getKey()}", "value":"${field.getValue()}","unit":"${
-                message.unitSymbols[field.getKey()]
-            }"}${comma}/)
+            json.append(/{"name":"${field.getKey()}", "value":"${field.getValue()}","unit":"${message.unitSymbols[field.getKey()]}"}${comma}/)
         }
         json.append("]}")
         return json.toString()
