@@ -8,7 +8,6 @@ import main.java.com.benbr.parser.types.DefinitionMessage
 import main.java.com.benbr.parser.types.FieldDefinition
 import main.java.com.benbr.parser.types.MessageHeader
 import main.java.com.benbr.profile.Constants
-import main.java.com.benbr.profile.types.EnumerationType
 import main.java.com.benbr.profile.types.ProfileField
 
 class DataMessageParser {
@@ -54,7 +53,7 @@ class DataMessageParser {
 
     public void resolveNormalFieldWithUnits(DataMessage message, List<Integer> bytes, ProfileField globalField, FieldDefinition fieldDefinition) {
         def fieldName = globalField?.getName()
-        fieldName = (fieldName == null) ? generateUniqueUnknownKey(message) : globalField.getName()
+        fieldName = (fieldName == null) ? getUnknownFieldName(fieldDefinition.getDefinitionNumber()) : globalField.getName()
         message.fields[fieldName] = getFieldValue(bytes.toList(), fieldDefinition, globalField)
         message.unitSymbols[fieldName] = globalField?.getUnit()
     }
@@ -71,19 +70,7 @@ class DataMessageParser {
         }
     }
 
-    public Object getFields(DataMessage message, ProfileField globalField, List<Integer> bytes) {
-        def fieldName = globalField?.getName()
-        if (globalField?.isArray()) {
-            return getComponents(bytes, globalField, accumulatedFields)
-        } else {
-            fieldName = (fieldName == null) ? generateUniqueUnknownKey(message) : globalField.getName()
-            message.fields[fieldName] = getFieldValue(bytes.toList(), localDefinition, fieldDefinition, globalField)
-            message.unitSymbols[fieldName] = globalField?.getUnit()
-        }
-    }
-
-
-    private long decompressTimestamp(long timestampOffset, long previousTimestamp) {
+    private static long decompressTimestamp(long timestampOffset, long previousTimestamp) {
         if (timestampOffset >= (previousTimestamp & 0x0000001F)) {
             return (previousTimestamp & 0xFFFFFFE0) + timestampOffset
         }
@@ -111,7 +98,7 @@ class DataMessageParser {
 
     }
 
-    private double getAccumulatedFieldValue(double value, Map<String, Object> accumulatedFields, ProfileField globalField, String component, int bits, int globalFieldIndex) {
+    private static double getAccumulatedFieldValue(double value, Map<String, Object> accumulatedFields, ProfileField globalField, String component, int bits, int globalFieldIndex) {
         Double[] prev = accumulatedFields?.get(globalField.getName())?.get(component)
         double fieldValue = 0
 
@@ -133,7 +120,7 @@ class DataMessageParser {
         return fieldValue
     }
 
-    private Object getFieldValue(List<Integer> valueBytes, FieldDefinition fieldDefinition, ProfileField globalDefinition) {
+    private static Object getFieldValue(List<Integer> valueBytes, FieldDefinition fieldDefinition, ProfileField globalDefinition) {
         Object value = TypeEncoder.encode(valueBytes.toList(), fieldDefinition.getType())
 
         if (globalDefinition?.getType() != "string") {
@@ -143,7 +130,7 @@ class DataMessageParser {
         return value
     }
 
-    private List<Integer> resolveEndiness(List<Integer> valueBytes, DefinitionMessage definitionMessage) {
+    private static List<Integer> resolveEndiness(List<Integer> valueBytes, DefinitionMessage definitionMessage) {
         if (definitionMessage.getArchitectureType() == ArchitectureType.LITTLE_ENDIAN) {
             valueBytes = Util.littleToBigEndian(valueBytes.toList())
         }
@@ -152,26 +139,16 @@ class DataMessageParser {
     }
 
     /**
-     * Generates unknown field names in the form unknown_N, where N is an integer.
-     * For example, unknown_1, unknown_2...
-     * @param message
+     * Generates a field name for a field that is not included in the FIT profile (probably product specific information
+     * that is simply not interesting to us.
+     *
+     * The field name has the format `unknown_<definition number>`, where `definition number` is the the number given in
+     * the header. This allows for the field to be written to a new FIT file without loosing any data
+     * .
+     * @param definitionNumber The definition number in the header.
      */
-    private static String generateUniqueUnknownKey(DataMessage message) {
-        // TODO store the largest value of N instead of recalculating it every time.
-        List postfixes = []
-
-        message.fields.each { name, value ->
-            name = (String) name;
-            def parts = name.split("unknown")
-
-            if (parts.size() == 2) {
-                postfixes << parts[1].replace("_", "").toInteger()
-            }
-        }
-
-        int postfix = (postfixes.max() == null) ? 1 : postfixes.max() + 1;
-
-        return "unknown_${postfix}"
+    private static String getUnknownFieldName(int definitionNumber) {
+        return "unknown_${definitionNumber}"
     }
 
     private void resolveDynamicFields(DataMessage message, DefinitionMessage localDefinition) {
@@ -211,7 +188,7 @@ class DataMessageParser {
         return globalField
     }
 
-    private boolean referenceFieldContainsValue(DataMessage message, String referenceName, String referenceValue) {
+    private static boolean referenceFieldContainsValue(DataMessage message, String referenceName, String referenceValue) {
         // Look up reference field
         def referenceField = message.fields.find { it.key == referenceName }
         if (referenceField == null) {
@@ -234,6 +211,5 @@ class DataMessageParser {
         if (enumType == null) return false;
         return (enumType.key == parentFieldValue)
     }
-
 
 }
