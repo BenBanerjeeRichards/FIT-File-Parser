@@ -35,22 +35,10 @@ class DataMessageParser {
             int[] unsignedBytes = Util.readUnsignedValues(inputStream, fieldDefinition.getSize())
             List<Integer> bytes = resolveEndiness(unsignedBytes.toList(), localDefinition)
 
-            def fieldName = globalField?.getName()
             if (globalField?.isArray()) {
-                //TODO  move to another function
-                message.fields[fieldName] = getComponents(bytes, globalField, accumulatedFields)
-                message.unitSymbols[fieldName] = new HashMap<String, String>()
-                message.fieldIsArray[fieldName] = true
-
-                globalField.getComponents().eachWithIndex{ String entry, int i ->
-                    String unit = globalField.getSubFieldUnits()[i]
-                    message.unitSymbols[fieldName][entry] = unit
-                }
-
+                resolveArrayFieldsWithUnits(message, bytes, globalField)
             } else {
-                fieldName = (fieldName == null) ? generateUniqueUnknownKey(message) : globalField.getName()
-                message.fields[fieldName] = getFieldValue(bytes.toList(), localDefinition, fieldDefinition, globalField)
-                message.unitSymbols[fieldName] = globalField?.getUnit()
+                resolveNormalFieldWithUnits(message, bytes,globalField, fieldDefinition)
             }
 
         }
@@ -62,6 +50,36 @@ class DataMessageParser {
         resolveDynamicFields(message, localDefinition)
 
         return message;
+    }
+
+    public void resolveNormalFieldWithUnits(DataMessage message, List<Integer> bytes, ProfileField globalField, FieldDefinition fieldDefinition) {
+        def fieldName = globalField?.getName()
+        fieldName = (fieldName == null) ? generateUniqueUnknownKey(message) : globalField.getName()
+        message.fields[fieldName] = getFieldValue(bytes.toList(), fieldDefinition, globalField)
+        message.unitSymbols[fieldName] = globalField?.getUnit()
+    }
+
+    public void resolveArrayFieldsWithUnits(DataMessage message, List<Integer> bytes, ProfileField globalField) {
+        def fieldName = globalField.getName()
+        message.fields[fieldName] = getComponents(bytes, globalField, accumulatedFields)
+        message.unitSymbols[fieldName] = new HashMap<String, String>()
+        message.fieldIsArray[fieldName] = true
+
+        globalField.getComponents().eachWithIndex{ String entry, int i ->
+            String unit = globalField.getSubFieldUnits()[i]
+            message.unitSymbols[fieldName][entry] = unit
+        }
+    }
+
+    public Object getFields(DataMessage message, ProfileField globalField, List<Integer> bytes) {
+        def fieldName = globalField?.getName()
+        if (globalField?.isArray()) {
+            return getComponents(bytes, globalField, accumulatedFields)
+        } else {
+            fieldName = (fieldName == null) ? generateUniqueUnknownKey(message) : globalField.getName()
+            message.fields[fieldName] = getFieldValue(bytes.toList(), localDefinition, fieldDefinition, globalField)
+            message.unitSymbols[fieldName] = globalField?.getUnit()
+        }
     }
 
 
@@ -115,7 +133,7 @@ class DataMessageParser {
         return fieldValue
     }
 
-    private Object getFieldValue(List<Integer> valueBytes, DefinitionMessage definitionMessage, FieldDefinition fieldDefinition, ProfileField globalDefinition) {
+    private Object getFieldValue(List<Integer> valueBytes, FieldDefinition fieldDefinition, ProfileField globalDefinition) {
         Object value = TypeEncoder.encode(valueBytes.toList(), fieldDefinition.getType())
 
         if (globalDefinition?.getType() != "string") {
