@@ -99,7 +99,6 @@ class TypeEncoder<T> {
         return sb.toString().trim()
     }
 
-
     static long combineBigEndian(List<Integer> input) {
         long output = 0L;
         input.eachWithIndex { it, idx ->

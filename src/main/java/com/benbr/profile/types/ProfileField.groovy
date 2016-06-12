@@ -169,6 +169,14 @@ class ProfileField {
         return sb.append("]").toString()
     }
 
+    public boolean isComponent() {
+        return components?.size() > 0 && isArray
+    }
+
+    public boolean isList() {
+        return (components == null || components?.size() == 0) && isArray
+    }
+
 
     @Override
     public String toString() {

@@ -8,6 +8,7 @@ import main.java.com.benbr.parser.types.DefinitionMessage
 import main.java.com.benbr.parser.types.FieldDefinition
 import main.java.com.benbr.parser.types.MessageHeader
 import main.java.com.benbr.profile.Constants
+import main.java.com.benbr.profile.types.ArrayType
 import main.java.com.benbr.profile.types.ProfileField
 
 class DataMessageParser {
@@ -34,12 +35,11 @@ class DataMessageParser {
             int[] unsignedBytes = Util.readUnsignedValues(inputStream, fieldDefinition.getSize())
             List<Integer> bytes = resolveEndiness(unsignedBytes.toList(), localDefinition)
 
-            if (globalField?.isArray()) {
-                resolveArrayFieldsWithUnits(message, bytes, globalField)
-            } else {
-                resolveNormalFieldWithUnits(message, bytes,globalField, fieldDefinition)
-            }
+            def fieldName = globalField?.getName()
+            fieldName = (fieldName == null) ? getUnknownFieldName(fieldDefinition.getDefinitionNumber()) : globalField.getName()
 
+            message.fields[fieldName] = getFieldValue(globalField, fieldDefinition, bytes.asList())
+            message.unitSymbols[fieldName] = getFieldUnits(globalField)
         }
 
         if (header.isCompressedTimestamp()) {
@@ -51,23 +51,57 @@ class DataMessageParser {
         return message;
     }
 
-    public static void resolveNormalFieldWithUnits(DataMessage message, List<Integer> bytes, ProfileField globalField, FieldDefinition fieldDefinition) {
-        def fieldName = globalField?.getName()
-        fieldName = (fieldName == null) ? getUnknownFieldName(fieldDefinition.getDefinitionNumber()) : globalField.getName()
-        message.fields[fieldName] = getFieldValue(bytes.toList(), fieldDefinition, globalField)
-        message.unitSymbols[fieldName] = globalField?.getUnit()
+    private Object getFieldValue(ProfileField globalField, FieldDefinition fieldDefinition, List<Integer> bytes) {
+        if (globalField?.isArray()) {
+            if (globalField.isComponent()) {
+                return getComponents(bytes, globalField, accumulatedFields)
+            } else if (globalField.isList()) {
+                String typeName = Constants.baseTypes[fieldDefinition.getType()]
+                int arrayElementSize =  Util.baseTypenameToNumBytes(typeName)
+                int arraySize = fieldDefinition.getSize() / arrayElementSize;
+
+                if (globalField.getArrayType() == ArrayType.SIZE_INTEGER && arraySize != globalField.getSize()) {
+                    // TODO log warning
+                }
+
+                def array = new Object[arraySize]
+
+                for (int i = 0; i < arraySize; i++) {
+                    def subListRange = i * arrayElementSize .. i * arrayElementSize + arrayElementSize - 1
+                    array[i] = transformFieldValue(bytes[subListRange].toList(), fieldDefinition, globalField)
+                }
+
+                return array
+            } else {
+                // TODO log warning
+                return null;
+            }
+        } else {
+            return transformFieldValue(bytes, fieldDefinition, globalField)
+        }
     }
 
-    public void resolveArrayFieldsWithUnits(DataMessage message, List<Integer> bytes, ProfileField globalField) {
-        def fieldName = globalField.getName()
-        message.fields[fieldName] = getComponents(bytes, globalField, accumulatedFields)
-        message.unitSymbols[fieldName] = new HashMap<String, String>()
-        message.fieldIsArray[fieldName] = true
+    private static Object getFieldUnits(ProfileField globalField) {
+        if (globalField?.isArray()) {
+            if (globalField.isComponent()) {
+                return getComponentUnits(globalField)
+            } else if (!globalField.isList()) {
+                return null
+            }
+        }
+
+        return globalField?.getUnit()
+    }
+
+    private static HashMap<String, String> getComponentUnits(ProfileField globalField) {
+        Map<String, String> units = [:]
 
         globalField.getComponents().eachWithIndex{ String entry, int i ->
             String unit = globalField.getSubFieldUnits()[i]
-            message.unitSymbols[fieldName][entry] = unit
+            units << [(entry): unit]
         }
+
+        return units
     }
 
     private static long decompressTimestamp(long timestampOffset, long previousTimestamp) {
@@ -120,11 +154,12 @@ class DataMessageParser {
         return fieldValue
     }
 
-    private static Object getFieldValue(List<Integer> valueBytes, FieldDefinition fieldDefinition, ProfileField globalDefinition) {
+
+    private static Object transformFieldValue(List<Integer> valueBytes, FieldDefinition fieldDefinition, ProfileField globalDefinition) {
         Object value = TypeEncoder.encode(valueBytes.toList(), fieldDefinition.getType())
 
         if (!(value instanceof String)) {
-            value = TypeEncoder.applyScaleAndOffset(value, globalDefinition)
+            value = TypeEncoder.applyScaleAndOffset(value as Number, globalDefinition)
         }
 
         return value
