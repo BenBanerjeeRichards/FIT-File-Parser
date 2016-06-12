@@ -40,7 +40,7 @@ class FitParser {
                 locals.put(header.getLocalMessageType(), message)
                 DefinitionMessageParser.associateFieldDefinitionWithGlobalProfile(message, message.getGlobalMessageNumber())
             } else {
-                DataMessage message = new DataMessageParser().parse(fitStream, header, locals, accumulatedFields, timestampReference)
+                DataMessage message = new DataMessageParser(locals, accumulatedFields, timestampReference).parse(fitStream, header)
 
                 if (!header.isCompressedTimestamp() && message.fields["timestamp"] != null) {
                     timestampReference = message.timestamp
@@ -51,6 +51,12 @@ class FitParser {
         }
     }
 
+    /**
+     * Parses a FIT file.
+     *
+     * @param fitFile - the FIT file to parse
+     * @return a list containing all of the DataMessages found in the FIT file (in sequential order).
+     */
     public List<DataMessage> parse(File fitFile) {
         Queue<DataMessage> messageQueue = new LinkedBlockingQueue<>()
         parseFile(fitFile, messageQueue)

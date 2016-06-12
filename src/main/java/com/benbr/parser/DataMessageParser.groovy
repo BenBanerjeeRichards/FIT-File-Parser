@@ -13,12 +13,17 @@ import main.java.com.benbr.profile.types.ProfileField
 
 class DataMessageParser {
 
-    private HashMap<String, EnumerationType> types;
+    private HashMap<Integer, DefinitionMessage> localDefinitions
+    private HashMap<String, Object> accumulatedFields
+    private long referenceTimestamp
 
-    DataMessageParser() {
+    DataMessageParser(HashMap<Integer, DefinitionMessage> localDefinitions, HashMap<String, Object> accumulatedFields, long referenceTimestamp) {
+        this.localDefinitions = localDefinitions
+        this.accumulatedFields = accumulatedFields
+        this.referenceTimestamp = referenceTimestamp
     }
 
-    public DataMessage parse(DataInputStream inputStream, MessageHeader header, HashMap<Integer, DefinitionMessage> localDefinitions, HashMap<String, Object> accumulatedFields, long referenceTimestamp) {
+    public DataMessage parse(DataInputStream inputStream, MessageHeader header) {
         def localDefinition = localDefinitions[header.getLocalMessageType()]
         if (!localDefinition) {
             throw new FITDecodeException("Data message type ${header.getLocalMessageType()} not defined in local scope")
