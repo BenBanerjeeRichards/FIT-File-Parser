@@ -40,6 +40,7 @@ class DataMessageParser {
 
             message.fields[fieldName] = getFieldValue(globalField, fieldDefinition, bytes.asList())
             message.unitSymbols[fieldName] = getFieldUnits(globalField)
+            message.fieldType[fieldName] = globalField?.isArray() ?: false
         }
 
         if (header.isCompressedTimestamp()) {
@@ -56,22 +57,7 @@ class DataMessageParser {
             if (globalField.isComponent()) {
                 return getComponents(bytes, globalField, accumulatedFields)
             } else if (globalField.isList()) {
-                String typeName = Constants.baseTypes[fieldDefinition.getType()]
-                int arrayElementSize =  Util.baseTypenameToNumBytes(typeName)
-                int arraySize = fieldDefinition.getSize() / arrayElementSize;
-
-                if (globalField.getArrayType() == ArrayType.SIZE_INTEGER && arraySize != globalField.getSize()) {
-                    // TODO log warning
-                }
-
-                def array = new Object[arraySize]
-
-                for (int i = 0; i < arraySize; i++) {
-                    def subListRange = i * arrayElementSize .. i * arrayElementSize + arrayElementSize - 1
-                    array[i] = transformFieldValue(bytes[subListRange].toList(), fieldDefinition, globalField)
-                }
-
-                return array
+                return getListElements(globalField, fieldDefinition, bytes)
             } else {
                 // TODO log warning
                 return null;
@@ -79,6 +65,25 @@ class DataMessageParser {
         } else {
             return transformFieldValue(bytes, fieldDefinition, globalField)
         }
+    }
+
+    private static Object[] getListElements(ProfileField globalField, FieldDefinition fieldDefinition, List<Integer> bytes) {
+        String typeName = Constants.baseTypes[fieldDefinition.getType()]
+        int arrayElementSize =  Util.baseTypenameToNumBytes(typeName)
+        int arraySize = fieldDefinition.getSize() / arrayElementSize;
+
+        if (globalField.getArrayType() == ArrayType.SIZE_INTEGER && arraySize != globalField.getSize()) {
+            // TODO log warning
+        }
+
+        def array = new Object[arraySize]
+
+        for (int i = 0; i < arraySize; i++) {
+            def subListRange = i * arrayElementSize .. i * arrayElementSize + arrayElementSize - 1
+            array[i] = transformFieldValue(bytes[subListRange].toList(), fieldDefinition, globalField)
+        }
+
+        return array
     }
 
     private static Object getFieldUnits(ProfileField globalField) {
@@ -129,7 +134,6 @@ class DataMessageParser {
         }
 
         return components
-
     }
 
     private static double getAccumulatedFieldValue(double value, Map<String, Object> accumulatedFields, ProfileField globalField, String component, int bits, int globalFieldIndex) {
