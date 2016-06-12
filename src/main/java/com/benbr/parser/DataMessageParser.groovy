@@ -51,7 +51,7 @@ class DataMessageParser {
         return message;
     }
 
-    public void resolveNormalFieldWithUnits(DataMessage message, List<Integer> bytes, ProfileField globalField, FieldDefinition fieldDefinition) {
+    public static void resolveNormalFieldWithUnits(DataMessage message, List<Integer> bytes, ProfileField globalField, FieldDefinition fieldDefinition) {
         def fieldName = globalField?.getName()
         fieldName = (fieldName == null) ? getUnknownFieldName(fieldDefinition.getDefinitionNumber()) : globalField.getName()
         message.fields[fieldName] = getFieldValue(bytes.toList(), fieldDefinition, globalField)
@@ -77,7 +77,7 @@ class DataMessageParser {
         return (previousTimestamp & 0xFFFFFFE0) + timestampOffset + 0x20
     }
 
-    private Map<String, Object> getComponents(List<Integer> bytes, ProfileField globalField, Map<String, Object> accumulatedFields) {
+    private static Map<String, Object> getComponents(List<Integer> bytes, ProfileField globalField, Map<String, Object> accumulatedFields) {
         def components = [:]
         int currentBitPosition = 0
 
@@ -124,7 +124,7 @@ class DataMessageParser {
         Object value = TypeEncoder.encode(valueBytes.toList(), fieldDefinition.getType())
 
         if (globalDefinition?.getType() != "string") {
-            value = TypeEncoder.applyScaleAndOffset(value, globalDefinition)
+            value = TypeEncoder.applyScaleAndOffset(value as Number, globalDefinition)
         }
 
         return value
@@ -140,7 +140,7 @@ class DataMessageParser {
 
     /**
      * Generates a field name for a field that is not included in the FIT profile (probably product specific information
-     * that is simply not interesting to us.
+     * that is simply not interesting to us).
      *
      * The field name has the format `unknown_<definition number>`, where `definition number` is the the number given in
      * the header. This allows for the field to be written to a new FIT file without loosing any data
@@ -151,7 +151,7 @@ class DataMessageParser {
         return "unknown_${definitionNumber}"
     }
 
-    private void resolveDynamicFields(DataMessage message, DefinitionMessage localDefinition) {
+    private static void resolveDynamicFields(DataMessage message, DefinitionMessage localDefinition) {
         localDefinition.getFieldDefinitions().eachWithIndex { fieldDefinition, idx ->
             ProfileField globalField = localDefinition.getGlobalFields()[idx]
 
@@ -170,7 +170,7 @@ class DataMessageParser {
         }
     }
 
-    private ProfileField getFieldDefinition(DataMessage message, ProfileField globalField) {
+    private static ProfileField getFieldDefinition(DataMessage message, ProfileField globalField) {
         if (!globalField.isDynamicField()) return globalField;
 
         for (def subfield : globalField.getSubFields()) {
