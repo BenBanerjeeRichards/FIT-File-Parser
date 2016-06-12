@@ -69,7 +69,7 @@ class DefinitionMessageParser {
         message.getFieldDefinitions().eachWithIndex { FieldDefinition entry, int idx ->
             def globalField = globalFields.find { it.definitionNumber == entry.definitionNumber }
             if (globalField == null) {
-                def nullField = new ProfileField(null, "Unknown", null)
+                def nullField = new ProfileField(null, "unknown_${entry.definitionNumber}", null)
                 message.addFieldAssociation(idx, nullField)
             } else {
                 message.addFieldAssociation(idx, globalField)
