@@ -123,8 +123,8 @@ class DataMessageParser {
     private static Object getFieldValue(List<Integer> valueBytes, FieldDefinition fieldDefinition, ProfileField globalDefinition) {
         Object value = TypeEncoder.encode(valueBytes.toList(), fieldDefinition.getType())
 
-        if (globalDefinition?.getType() != "string") {
-            value = TypeEncoder.applyScaleAndOffset(value as Number, globalDefinition)
+        if (!(value instanceof String)) {
+            value = TypeEncoder.applyScaleAndOffset(value, globalDefinition)
         }
 
         return value
