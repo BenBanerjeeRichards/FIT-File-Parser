@@ -3,6 +3,7 @@ package main.java.com.benbr.parser
 import main.java.com.benbr.FITDecodeException
 import main.java.com.benbr.Type
 import main.java.com.benbr.Util
+import main.java.com.benbr.log.Log
 import main.java.com.benbr.parser.types.ArchitectureType
 import main.java.com.benbr.parser.types.DefinitionMessage
 import main.java.com.benbr.parser.types.FieldDefinition
@@ -16,18 +17,24 @@ class DataMessageParser {
     private HashMap<Integer, DefinitionMessage> localDefinitions
     private HashMap<String, Object> accumulatedFields
     private long referenceTimestamp
+    private static Log log;
 
     DataMessageParser(HashMap<Integer, DefinitionMessage> localDefinitions, HashMap<String, Object> accumulatedFields, long referenceTimestamp) {
         this.localDefinitions = localDefinitions
         this.accumulatedFields = accumulatedFields
         this.referenceTimestamp = referenceTimestamp
+        new File("parser.log").delete()
+        log = new Log(new FileWriter(new File("parser.log"), true))
     }
 
     public DataMessage parse(DataInputStream inputStream, MessageHeader header) {
         def localDefinition = localDefinitions[header.getLocalMessageType()]
         if (!localDefinition) {
+            // This kind of error can not be recovered from as the parser has no idea how many bytes to read until the
+            // end of the message
             throw new FITDecodeException("Data message type ${header.getLocalMessageType()} not defined in local scope")
         }
+
         DataMessage message = new DataMessage()
         message.type = Constants.messageIdToName[localDefinition.getGlobalMessageNumber()]
         localDefinition.getFieldDefinitions().eachWithIndex { fieldDefinition, idx ->
@@ -38,9 +45,12 @@ class DataMessageParser {
             def fieldName = globalField?.getName()
             fieldName = (fieldName == null) ? getUnknownFieldName(fieldDefinition.getDefinitionNumber()) : globalField.getName()
 
-            message.fields[fieldName] = getFieldValue(globalField, fieldDefinition, bytes.asList())
-            message.unitSymbols[fieldName] = getFieldUnits(globalField)
-            message.fieldType[fieldName] = globalField?.isArray() ?: false
+            message.with {
+                fields[fieldName] = getFieldValue(globalField, fieldDefinition, bytes.asList())
+                unitSymbols[fieldName] = getFieldUnits(globalField)
+                hasComponents[fieldName] = globalField?.isComponent()
+            }
+
         }
 
         if (header.isCompressedTimestamp()) {
@@ -48,6 +58,7 @@ class DataMessageParser {
         }
 
         resolveDynamicFields(message, localDefinition)
+
 
         return message;
     }
@@ -59,7 +70,7 @@ class DataMessageParser {
             } else if (globalField.isList()) {
                 return getListElements(globalField, fieldDefinition, bytes)
             } else {
-                // TODO log warning
+                log.warn("Found array element which is neither a component of a list")
                 return null;
             }
         } else {
@@ -73,7 +84,7 @@ class DataMessageParser {
         int arraySize = fieldDefinition.getSize() / arrayElementSize;
 
         if (globalField.getArrayType() == ArrayType.SIZE_INTEGER && arraySize != globalField.getSize()) {
-            // TODO log warning
+            log.warn("Array size specified in global profile does not match that in header")
         }
 
         def array = new Object[arraySize]
@@ -195,9 +206,10 @@ class DataMessageParser {
             ProfileField globalField = localDefinition.getGlobalFields()[idx]
 
             if (globalField == null) {
-                // TODO log warning
-
                 // Can not resolve dynamic field as the field can not be found in profile
+                log.warn("Failed to resolve dynamic fields. " +
+                        "Global message number: " + "${localDefinition.getGlobalMessageNumber()}. " +
+                         "Local field definition ${fieldDefinition.getDefinitionNumber()}")
                 return
             }
 
@@ -213,7 +225,6 @@ class DataMessageParser {
         if (!globalField.isDynamicField()) return globalField;
 
         for (def subfield : globalField.getSubFields()) {
-            // TODO figure out why .eachWithIndex does not work here
             for (int i = 0; i < subfield.getReferenceFieldName().size(); i++) {
                 def referenceName = subfield.getReferenceFieldName()[i]
                 def referenceValue = subfield.getReferenceFieldValue()[i]
@@ -231,7 +242,13 @@ class DataMessageParser {
         // Look up reference field
         def referenceField = message.fields.find { it.key == referenceName }
         if (referenceField == null) {
-            // TODO log warning
+            // NB: Most FIT files produced by Garmin devices produce an error due to a bug with their encoder.
+            // The device_type message type contains a dynamic field called device_type. It's name is dependent
+            // on the source_type field, however Garmin devices do not add this field to the message, meaning
+            // that this error is produced.
+            //
+            // The message will be along the lines of `Reference field source_type could not be found in message. (referenceValue:antplus`)
+            log.warn("Reference field $referenceName could not be found in message. (referenceValue:$referenceValue)")
             return false;
         }
 
@@ -240,7 +257,8 @@ class DataMessageParser {
 
         def referenceFieldTypeMatches = Type.types.find { it.key == referenceFieldType }
         if (referenceFieldTypeMatches == null) {
-            throw new FITDecodeException("Reference field type $referenceFieldType not found in profile types")
+            log.warn("No reference field type $referenceFieldType found in profile types")
+            return false;
         }
 
         HashMap<Integer, String> referenceTypeEnum = referenceFieldTypeMatches.value.enumeration
