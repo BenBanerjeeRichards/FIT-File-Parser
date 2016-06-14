@@ -55,12 +55,32 @@ class DataMessageParser {
 
         if (header.isCompressedTimestamp()) {
             message.fields["timestamp"] = decompressTimestamp(header.getTimestampOffset(), referenceTimestamp)
+            message.unitSymbols["timestamp"] = "s"
         }
 
         resolveDynamicFields(message, localDefinition)
 
 
         return message;
+    }
+
+    public static DataMessage flattenComponents(DataMessage message) {
+        def flatMessage = new DataMessage(type: message.type)
+
+        message.fields.each {fieldName, fieldValue ->
+            if (message.hasComponents[fieldName]) {
+                // This is where the flattening occurs
+                fieldValue.each {Map.Entry<String, Object> subField ->
+                    flatMessage.fields << subField
+                    flatMessage.unitSymbols[subField.getKey()] = message.unitSymbols[fieldName][subField.getKey()]
+                }
+            } else {
+                flatMessage.fields << [(fieldName) : fieldValue] as Map.Entry<String, Object>
+                flatMessage.unitSymbols[fieldName] = message.unitSymbols[fieldName]
+            }
+        }
+
+        return flatMessage
     }
 
     private Object getFieldValue(ProfileField globalField, FieldDefinition fieldDefinition, List<Integer> bytes) {
