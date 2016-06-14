@@ -12,7 +12,7 @@ class DefinitionMessage {
         this.developerFieldDefinitions = developerFieldDefinitions
         globalFields = []
 
-        // Vanilla loop prevents concurrent accesss exceptions
+        // Vanilla loop prevents concurrent access exceptions
         for (int i = 0; i < fieldDefinitions.size(); i++) {
             this.globalFields.add(i, null)
         }
