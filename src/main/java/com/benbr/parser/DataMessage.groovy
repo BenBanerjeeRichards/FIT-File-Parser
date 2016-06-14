@@ -54,6 +54,4 @@ class DataMessage {
     def propertyMissing(String name) {
         return fields[name]
     }
-
-
 }
