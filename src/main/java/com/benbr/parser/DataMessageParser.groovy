@@ -238,6 +238,7 @@ class DataMessageParser {
             ProfileField newDynamicDefinition = getFieldDefinition(message, globalField)
             String previousValue = message.fields.remove(globalField.getName())
             message.fields[newDynamicDefinition.getName()] = previousValue
+            message.unitSymbols[newDynamicDefinition.getName()] = newDynamicDefinition.getUnit()
         }
     }
 
